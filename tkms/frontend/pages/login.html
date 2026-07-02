@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — TunnelKMS</title>
+  <link rel="stylesheet" href="../css/style.css" />
+
+  <style>
+    .auth-bg {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-primary);
+    }
+
+    .auth-hero {
+      background: linear-gradient(135deg, #0a0f1e 0%, #1a1035 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .hero-logo {
+      font-size: 72px;
+      margin-bottom: 24px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .hero-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: var(--grad-amber);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 320px;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 40px;
+      text-align: left;
+    }
+
+    .hero-feat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .hero-feat .feat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--amber-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .auth-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background: var(--bg-primary);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+    }
+
+    .password-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    .error-msg {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .auth-bg {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-hero {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="auth-bg">
+    <div class="auth-hero">
+      <div class="hero-content">
+        <div class="brand-mark brand-mark-lg">
+          <span>TK</span>
+        </div>
+        <h1 class="hero-title">TunnelKMS</h1>
+        <p class="hero-subtitle">
+          Cloud-Based Construction Knowledge Management System for Tunnel Projects
+        </p>
+
+        <div class="hero-features">
+          <div class="hero-feat">
+            <div class="feat-icon">📁</div>
+            <span>Secure document management for all tunnel data</span>
+          </div>
+
+          <div class="hero-feat">
+            <div class="feat-icon">🤖</div>
+            <span>AI assistant powered by Google Gemini</span>
+          </div>
+
+          <div class="hero-feat">
+            <div class="feat-icon">👥</div>
+            <span>Role-based access for teams</span>
+          </div>
+
+          <div class="hero-feat">
+            <div class="feat-icon">📊</div>
+            <span>Real-time analytics & reporting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="brand-mark">
+            <span>TK</span>
+          </div>
+          <h1>Welcome back</h1>
+          <p>Sign in to your TunnelKMS account</p>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <form class="auth-form" id="loginForm">
+          <div class="input-group">
+            <label>Email Address <span class="req">*</span></label>
+            <div class="input-icon">
+              <span class="icon">📧</span>
+              <input type="email" id="email" placeholder="engineer@company.com" required autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Password <span class="req">*</span></label>
+            <div class="input-icon" style="position: relative;">
+              <span class="icon">🔒</span>
+              <input type="password" id="password" placeholder="Enter your password" required
+                autocomplete="current-password" style="padding-right: 44px;" />
+              <button type="button" class="password-toggle" id="togglePwd">👁️</button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
+            <label
+              style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; letter-spacing: 0; color: var(--text-secondary); font-weight: 400;">
+              <input type="checkbox" id="rememberMe" style="width: 16px; height: 16px; accent-color: var(--amber);" />
+              Remember me
+            </label>
+
+            <a href="forgot-password.html" style="color: var(--amber); font-weight: 500;">
+              Forgot password?
+            </a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">
+            Sign In →
+          </button>
+        </form>
+
+        <div class="auth-divider" style="margin: 20px 0;">OR</div>
+
+        <p style="text-align: center; font-size: 14px; color: var(--text-secondary);">
+          Don't have an account?
+          <a href="signup.html" style="font-weight: 600;">Create account</a>
+        </p>
+
+        <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 12px;">
+          Account access is approved by admin.
+        </p>
+
+        <div style="text-align: center; margin-top: 24px;">
+          <button onclick="Theme.toggle(); updateThemeBtn()" id="themeBtn" class="btn btn-ghost btn-sm">
+            🌙 Dark Mode
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+
+  <script>
+    if (Auth.isLoggedIn()) {
+      window.location.href = "dashboard.html";
+    }
+
+    function updateThemeBtn() {
+      const btn = document.getElementById("themeBtn");
+      btn.textContent = Theme.get() === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+    }
+
+    updateThemeBtn();
+
+    document.getElementById("togglePwd").addEventListener("click", function () {
+      const input = document.getElementById("password");
+      const isText = input.type === "text";
+
+      input.type = isText ? "password" : "text";
+      this.textContent = isText ? "👁️" : "🙈";
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("loginBtn");
+      const errEl = document.getElementById("errorMsg");
+
+      errEl.classList.remove("show");
+      errEl.textContent = "";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      btn.innerHTML = '<span class="spinner"></span> Signing in...';
+      btn.disabled = true;
+
+      try {
+        const data = await API.post("/azure-auth/login", {
+          email,
+          password
+        });
+
+        Auth.setSession(data.token, data.user);
+
+        Toast.success("Welcome! Redirecting...");
+
+        setTimeout(function () {
+          window.location.href = "dashboard.html";
+        }, 800);
+      } catch (err) {
+        errEl.textContent = err.message || "Login failed";
+        errEl.classList.add("show");
+
+        btn.innerHTML = "Sign In →";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

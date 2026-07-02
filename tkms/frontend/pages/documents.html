@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documents — TunnelKMS</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .filters-bar { display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px;align-items:center; }
+    .filters-bar input[type="text"] { flex:1;min-width:200px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-sm);color:var(--text-primary);font-size:14px; }
+    .filters-bar input[type="text"]:focus { border-color:var(--amber);outline:none; }
+    .filters-bar select { padding:10px 14px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-sm);color:var(--text-primary);font-size:13px;min-width:160px; }
+    .filters-bar select:focus { border-color:var(--amber);outline:none; }
+
+    .docs-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px; }
+    .doc-card-full { background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:var(--transition);display:flex;flex-direction:column;gap:14px; }
+    .doc-card-full:hover { border-color:var(--amber);transform:translateY(-2px);box-shadow:var(--shadow-lg); }
+    .doc-card-top { display:flex;gap:12px;align-items:flex-start; }
+    .doc-card-icon { width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0; }
+    .doc-card-title { font-size:14px;font-weight:700;margin-bottom:4px;word-break:break-word;line-height:1.3; }
+    .doc-card-sub { font-size:12px;color:var(--text-muted); }
+    .doc-card-meta { display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px; }
+    .doc-meta-item { display:flex;flex-direction:column;gap:2px; }
+    .doc-meta-item .label { color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px; }
+    .doc-meta-item .value { color:var(--text-primary);font-weight:500; }
+    .doc-card-actions { display:flex;gap:8px;border-top:1px solid var(--border);padding-top:14px;margin-top:auto; }
+    .doc-id-tag { font-size:10px;color:var(--amber);background:var(--amber-glow);padding:3px 8px;border-radius:4px;font-family:monospace;font-weight:600;border:1px solid rgba(245,158,11,.2); }
+
+    .pagination { display:flex;gap:8px;align-items:center;justify-content:center;margin-top:32px; }
+    .pagination button { width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border-light);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;font-size:14px;transition:var(--transition); }
+    .pagination button.active { background:var(--amber);color:#0a0f1e;border-color:var(--amber);font-weight:700; }
+    .pagination button:hover:not(.active) { border-color:var(--amber);color:var(--amber); }
+
+    /* View Modal */
+    .doc-view-header { display:flex;align-items:flex-start;gap:16px;margin-bottom:24px; }
+    .doc-view-icon { font-size:40px;flex-shrink:0; }
+    .doc-view-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    .detail-row { display:flex;flex-direction:column;gap:4px; }
+    .detail-row .dl { font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:600; }
+    .detail-row .dv { font-size:14px;color:var(--text-primary);font-weight:500; }
+    .desc-box { background:var(--bg-secondary);border-radius:var(--radius-sm);padding:14px;font-size:13px;color:var(--text-secondary);line-height:1.6;border:1px solid var(--border); }
+    .view-tabs { display:flex;gap:4px;margin-bottom:16px;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:4px; }
+    .view-tab { flex:1;text-align:center;padding:8px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);transition:var(--transition); }
+    .view-tab.active { background:var(--bg-card);color:var(--text-primary);box-shadow:var(--shadow); }
+
+    .results-info { font-size:13px;color:var(--text-muted);margin-bottom:16px; }
+  </style>
+</head>
+<body>
+<div class="page-wrapper" style="margin-top:64px;">
+  <div class="main-content">
+    <div class="page-header">
+      <h1>📁 Documents</h1>
+      <p>Browse, search and manage all tunnel construction documents</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Search by name, project, description..." oninput="debounceSearch()">
+      <select id="filterType" onchange="loadDocs()">
+        <option value="">All Types</option>
+        <option>Tunnel Design</option><option>Safety Reports</option><option>Daily Progress Reports</option>
+        <option>Site Inspection</option><option>Equipment Details</option><option>Material Reports</option>
+        <option>Project Drawings</option><option>Contracts</option><option>Specifications</option>
+        <option>Survey Reports</option><option>Environmental Reports</option><option>Other</option>
+      </select>
+      <select id="filterDept" onchange="loadDocs()">
+        <option value="">All Departments</option>
+        <option>Tunnel Design</option><option>Safety</option><option>Engineering</option>
+        <option>Site Management</option><option>Equipment</option><option>Materials</option>
+        <option>Survey</option><option>Administration</option><option>Other</option>
+      </select>
+      <select id="sortBy" onchange="loadDocs()">
+        <option value="-createdAt">Newest First</option>
+        <option value="createdAt">Oldest First</option>
+        <option value="-viewCount">Most Viewed</option>
+        <option value="originalName">Name A→Z</option>
+      </select>
+      <button onclick="openUploadModal()" class="btn btn-primary">📤 Upload</button>
+    </div>
+
+    <div class="results-info" id="resultsInfo"></div>
+
+    <!-- Docs Grid -->
+    <div class="docs-grid" id="docsGrid">
+      ${Array(6).fill('<div class="doc-card-full"><div style="height:180px;" class="skeleton"></div></div>').join('')}
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+    <!-- Viewed History Tab -->
+    <div style="margin-top:40px;">
+      <div class="section-title">👁️ Recently Viewed</div>
+      <div id="viewedList" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🚇 TunnelKMS</div>
+      <div class="footer-copy">© 2025 TunnelKMS · Cloud Construction Knowledge Platform</div>
+    </div>
+  </footer>
+</div>
+
+<!-- Upload Modal (same as dashboard) -->
+<div class="modal-overlay hidden" id="uploadModal">
+  <div class="modal" style="max-width:660px;">
+    <div class="modal-header">
+      <h2>📤 Upload Document</h2>
+      <button class="modal-close" onclick="closeUploadModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event)" style="padding:32px;">
+        <div class="upload-icon">☁️</div>
+        <p id="dropText"><strong>Click to browse</strong> or drag & drop</p>
+        <p style="font-size:12px;margin-top:6px;color:var(--text-muted);">PDF, DOC, DOCX, XLS, DWG, Images · Max 50MB</p>
+      </div>
+      <input type="file" id="fileInput" style="display:none;" onchange="handleFileInput(this)">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="input-group"><label>Project Name <span class="req">*</span></label><input type="text" id="u_project" placeholder="Metro Tunnel Phase 2"></div>
+        <div class="input-group"><label>Department <span class="req">*</span></label>
+          <select id="u_dept">
+            <option value="">-- Select --</option>
+            <option>Tunnel Design</option><option>Safety</option><option>Engineering</option><option>Site Management</option><option>Equipment</option><option>Materials</option><option>Survey</option><option>Administration</option><option>Other</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Document Type <span class="req">*</span></label>
+          <select id="u_type">
+            <option value="">-- Select --</option>
+            <option>Tunnel Design</option><option>Safety Reports</option><option>Daily Progress Reports</option><option>Site Inspection</option><option>Equipment Details</option><option>Material Reports</option><option>Project Drawings</option><option>Contracts</option><option>Specifications</option><option>Survey Reports</option><option>Environmental Reports</option><option>Other</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Tunnel Section</label><input type="text" id="u_section" placeholder="Section A, Ch 0+200"></div>
+        <div class="input-group"><label>Document Date</label><input type="date" id="u_date"></div>
+        <div class="input-group"><label>Tags</label><input type="text" id="u_tags" placeholder="boring, TBM, safety"></div>
+      </div>
+      <div class="input-group"><label>Description</label><textarea id="u_desc" rows="2" style="resize:vertical;"></textarea></div>
+      <div id="uploadProgress" style="display:none;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
+          <span id="uploadMsg" style="color:var(--info);">Uploading...</span>
+          <span id="uploadPct">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="uploadBar" style="width:0%;"></div></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+      <button class="btn btn-primary" id="uploadBtn" onclick="doUpload()">📤 Upload</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Document Modal -->
+<div class="modal-overlay hidden" id="viewModal">
+  <div class="modal" style="max-width:700px;">
+    <div class="modal-header">
+      <h2>📄 Document Details</h2>
+      <button class="modal-close" onclick="document.getElementById('viewModal').classList.add('hidden')">×</button>
+    </div>
+    <div class="modal-body" id="viewModalBody"></div>
+    <div class="modal-footer" id="viewModalFooter"></div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/nav.js"></script>
+<script>
+  let currentPage = 1, totalPages = 1, searchTimer;
+  let uploadFile = null;
+
+  async function init() {
+    await Nav.build('documents');
+    document.getElementById('u_date').value = new Date().toISOString().split('T')[0];
+    await loadDocs();
+    await loadViewed();
+    // Check if opened with ?view=id
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view')) viewDocument(params.get('view'));
+  }
+
+  async function loadDocs(page=1) {
+    currentPage = page;
+    const search = document.getElementById('searchInput').value.trim();
+    const type = document.getElementById('filterType').value;
+    const dept = document.getElementById('filterDept').value;
+    const sort = document.getElementById('sortBy').value;
+    const params = new URLSearchParams({ page, limit:12, sort });
+    if (search) params.append('search', search);
+    if (type) params.append('documentType', type);
+    if (dept) params.append('departmentName', dept);
+
+    try {
+      const data = await API.get('/documents?' + params.toString());
+      totalPages = data.pages;
+      document.getElementById('resultsInfo').textContent = `Showing ${data.documents.length} of ${data.total} documents`;
+      renderDocs(data.documents);
+      renderPagination(data.total, data.pages);
+    } catch(e) {
+      document.getElementById('docsGrid').innerHTML = '<div style="color:var(--danger);grid-column:1/-1;">Failed to load documents</div>';
+    }
+  }
+
+  function renderDocs(docs) {
+    if (!docs.length) {
+      document.getElementById('docsGrid').innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1;">
+          <div class="empty-icon">📭</div>
+          <h3>No documents found</h3>
+          <p>Try adjusting your search or filters, or upload a new document</p>
+          <button onclick="openUploadModal()" class="btn btn-primary" style="margin-top:16px;">📤 Upload Document</button>
+        </div>`;
+      return;
+    }
+    document.getElementById('docsGrid').innerHTML = docs.map(doc => `
+      <div class="doc-card-full fade-in">
+        <div class="doc-card-top">
+          <div class="doc-card-icon" style="background:${Format.docTypeColor(doc.documentType)}22;">${Format.fileIcon(doc.originalName)}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="doc-id-tag">${doc.documentId}</div>
+            <div class="doc-card-title" style="margin-top:6px;" title="${doc.originalName}">${doc.originalName}</div>
+            <div class="doc-card-sub">${doc.projectName}</div>
+          </div>
+        </div>
+        <div class="doc-card-meta">
+          <div class="doc-meta-item"><span class="label">Type</span><span class="value" style="color:${Format.docTypeColor(doc.documentType)};">${doc.documentType}</span></div>
+          <div class="doc-meta-item"><span class="label">Department</span><span class="value">${doc.departmentName}</span></div>
+          <div class="doc-meta-item"><span class="label">Uploaded by</span><span class="value">${doc.uploadedByName||'—'}</span></div>
+          <div class="doc-meta-item"><span class="label">Size</span><span class="value">${Format.fileSize(doc.fileSize)}</span></div>
+          <div class="doc-meta-item"><span class="label">Date</span><span class="value">${Format.date(doc.createdAt)}</span></div>
+          <div class="doc-meta-item"><span class="label">Views</span><span class="value">👁️ ${doc.viewCount||0}</span></div>
+        </div>
+        ${doc.tunnelSection ? `<div style="font-size:12px;color:var(--text-muted);">📍 ${doc.tunnelSection}</div>` : ''}
+        <div class="doc-card-actions">
+          <button onclick="viewDocument('${doc._id}')" class="btn btn-secondary btn-sm" style="flex:1;">👁️ View</button>
+          <button onclick="downloadDoc('${doc._id}','${doc.originalName}')" class="btn btn-primary btn-sm" style="flex:1;">⬇️ Download</button>
+          ${canDelete(doc) ? `<button onclick="deleteDoc('${doc._id}',this)" class="btn btn-danger btn-sm">🗑️</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function canDelete(doc) {
+    const user = Auth.getUser();
+    return user?.role === 'admin' || doc.uploadedBy === user?.id;
+  }
+
+  function renderPagination(total, pages) {
+    if (pages <= 1) { document.getElementById('pagination').innerHTML=''; return; }
+    let html = '';
+    for (let i=1;i<=pages;i++) {
+      html += `<button class="${i===currentPage?'active':''}" onclick="loadDocs(${i})">${i}</button>`;
+    }
+    document.getElementById('pagination').innerHTML =
+      `<button onclick="loadDocs(Math.max(1,currentPage-1))" ${currentPage===1?'disabled':''}>‹</button>${html}<button onclick="loadDocs(Math.min(totalPages,currentPage+1))" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  }
+
+  async function viewDocument(id) {
+    document.getElementById('viewModal').classList.remove('hidden');
+    document.getElementById('viewModalBody').innerHTML = '<div style="text-align:center;padding:32px;"><div style="font-size:32px;animation:spin 1s linear infinite;display:inline-block;">⏳</div></div>';
+    try {
+      const data = await API.get(`/documents/${id}`);
+      const doc = data.document;
+      document.getElementById('viewModalBody').innerHTML = `
+        <div class="doc-view-header">
+          <div class="doc-view-icon">${Format.fileIcon(doc.originalName)}</div>
+          <div>
+            <div class="doc-id-tag">${doc.documentId}</div>
+            <h3 style="margin-top:6px;font-size:18px;">${doc.originalName}</h3>
+            <div style="color:var(--text-muted);font-size:13px;margin-top:4px;">${doc.projectName}</div>
+          </div>
+        </div>
+        <div class="doc-view-grid">
+          <div class="detail-row"><div class="dl">Document Type</div><div class="dv"><span style="color:${Format.docTypeColor(doc.documentType)};">● </span>${doc.documentType}</div></div>
+          <div class="detail-row"><div class="dl">Department</div><div class="dv">${doc.departmentName}</div></div>
+          <div class="detail-row"><div class="dl">Uploaded By</div><div class="dv">${doc.uploadedByName||'—'}</div></div>
+          <div class="detail-row"><div class="dl">File Size</div><div class="dv">${Format.fileSize(doc.fileSize)}</div></div>
+          <div class="detail-row"><div class="dl">Upload Date</div><div class="dv">${Format.dateTime(doc.createdAt)}</div></div>
+          <div class="detail-row"><div class="dl">Total Views</div><div class="dv">👁️ ${doc.viewCount}</div></div>
+          ${doc.tunnelSection?`<div class="detail-row"><div class="dl">Tunnel Section</div><div class="dv">📍 ${doc.tunnelSection}</div></div>`:''}
+          <div class="detail-row"><div class="dl">Downloads</div><div class="dv">⬇️ ${doc.downloadCount||0}</div></div>
+        </div>
+        ${doc.description?`<div><div class="dl" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Description</div><div class="desc-box">${doc.description}</div></div>`:''}
+        ${doc.tags?.length?`<div><div class="dl" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Tags</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${doc.tags.map(t=>`<span class="chip">🏷️ ${t}</span>`).join('')}</div></div>`:''}
+      `;
+      document.getElementById('viewModalFooter').innerHTML = `
+        <a href="http://localhost:5000${doc.fileUrl}" target="_blank" class="btn btn-secondary">👁️ Open File</a>
+        <button onclick="downloadDoc('${doc._id}','${doc.originalName}')" class="btn btn-primary">⬇️ Download</button>
+      `;
+    } catch(e) {
+      document.getElementById('viewModalBody').innerHTML = `<div style="color:var(--danger);">${e.message}</div>`;
+    }
+  }
+
+  async function downloadDoc(id, name) {
+    Toast.info('Preparing download...');
+    window.open(`http://localhost:5000/api/documents/${id}/download`, '_blank');
+  }
+
+  async function deleteDoc(id, btn) {
+    if (!confirm('Delete this document? This action cannot be undone.')) return;
+    try {
+      await API.delete(`/documents/${id}`);
+      Toast.success('Document deleted');
+      loadDocs(currentPage);
+    } catch(e) { Toast.error(e.message); }
+  }
+
+  async function loadViewed() {
+    try {
+      const data = await API.get('/users/viewed-documents');
+      const docs = data.documents?.slice(0,5);
+      document.getElementById('viewedList').innerHTML = docs?.length ? docs.map(doc => `
+        <div class="doc-row" onclick="viewDocument('${doc._id}')">
+          <span style="font-size:22px;">${Format.fileIcon(doc.originalName)}</span>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:13px;">${doc.originalName}</div>
+            <div style="font-size:12px;color:var(--text-muted);">${doc.projectName} · ${doc.documentType}</div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);">${Format.timeAgo(doc.lastViewedAt)}</div>
+        </div>
+      `).join('') : '<div style="color:var(--text-muted);font-size:13px;">No viewed documents yet</div>';
+    } catch(e) {}
+  }
+
+  // Upload handlers
+  function openUploadModal() { document.getElementById('uploadModal').classList.remove('hidden'); }
+  function closeUploadModal() {
+    document.getElementById('uploadModal').classList.add('hidden');
+    uploadFile = null; document.getElementById('fileInput').value='';
+    document.getElementById('dropText').innerHTML = '<strong>Click to browse</strong> or drag & drop';
+    document.getElementById('uploadProgress').style.display='none';
+    document.getElementById('uploadBar').style.width='0%';
+    document.getElementById('uploadBtn').disabled=false;
+    document.getElementById('uploadBtn').innerHTML='📤 Upload';
+  }
+  function handleFileInput(input) { if(input.files[0]){uploadFile=input.files[0];document.getElementById('dropText').innerHTML=`<strong>${uploadFile.name}</strong> (${Format.fileSize(uploadFile.size)})`; } }
+  function handleDrop(e) { e.preventDefault(); if(e.dataTransfer.files[0]){uploadFile=e.dataTransfer.files[0];document.getElementById('dropText').innerHTML=`<strong>${uploadFile.name}</strong> (${Format.fileSize(uploadFile.size)})`; } }
+
+  async function doUpload() {
+    const file = uploadFile;
+    const project = document.getElementById('u_project').value.trim();
+    const dept = document.getElementById('u_dept').value;
+    const type = document.getElementById('u_type').value;
+    if (!file) { Toast.warning('Select a file'); return; }
+    if (!project||!dept||!type) { Toast.warning('Fill Project, Department and Document Type'); return; }
+
+    const btn = document.getElementById('uploadBtn');
+    btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Uploading...';
+    document.getElementById('uploadProgress').style.display='block';
+
+    let pct=0;
+    const iv=setInterval(()=>{ pct=Math.min(pct+10,88); document.getElementById('uploadBar').style.width=pct+'%'; document.getElementById('uploadPct').textContent=Math.round(pct)+'%'; },250);
+
+    const fd=new FormData();
+    fd.append('file',file); fd.append('projectName',project); fd.append('departmentName',dept); fd.append('documentType',type);
+    fd.append('tunnelSection',document.getElementById('u_section').value);
+    fd.append('description',document.getElementById('u_desc').value);
+    fd.append('documentDate',document.getElementById('u_date').value);
+    fd.append('tags',document.getElementById('u_tags').value);
+
+    try {
+      const data=await API.upload('/documents/upload',fd);
+      clearInterval(iv);
+      document.getElementById('uploadBar').style.width='100%';
+      document.getElementById('uploadMsg').textContent='✅ Uploaded Successfully!';
+      document.getElementById('uploadMsg').style.color='var(--success)';
+      Toast.success(`✅ Uploaded! ID: ${data.document.documentId}`);
+      setTimeout(()=>{ closeUploadModal(); loadDocs(); },1200);
+    } catch(err) {
+      clearInterval(iv);
+      document.getElementById('uploadMsg').textContent='❌ '+err.message;
+      document.getElementById('uploadMsg').style.color='var(--danger)';
+      btn.disabled=false; btn.innerHTML='📤 Upload';
+    }
+  }
+
+  function debounceSearch() { clearTimeout(searchTimer); searchTimer=setTimeout(()=>loadDocs(1),400); }
+
+  init();
+</script>
+</body>
+</html>

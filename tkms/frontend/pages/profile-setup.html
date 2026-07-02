@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Profile — TunnelKMS</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background:var(--bg-primary); min-height:100vh; padding:0; }
+    .setup-header {
+      background:var(--bg-nav); border-bottom:1px solid var(--border);
+      padding:0 24px; height:64px; display:flex; align-items:center; gap:16px;
+      position:sticky; top:0; z-index:50; backdrop-filter:blur(20px);
+    }
+    .setup-header h2 { font-size:18px; }
+    .setup-header p { font-size:13px; color:var(--text-muted); }
+    .setup-body { padding:40px 20px; max-width:720px; margin:0 auto; }
+    .steps-indicator { display:flex; align-items:center; gap:0; margin-bottom:40px; }
+    .step-dot { width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;transition:var(--transition); }
+    .step-dot.done { background:var(--grad-amber);color:#0a0f1e; }
+    .step-dot.active { background:var(--amber-glow);border:2px solid var(--amber);color:var(--amber); }
+    .step-dot.pending { background:var(--bg-card);border:2px solid var(--border-light);color:var(--text-muted); }
+    .step-line { flex:1;height:2px;background:var(--border-light);margin:0 4px; }
+    .step-line.done { background:var(--amber); }
+    .section-card { background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px; }
+    .section-card h3 { font-size:16px;margin-bottom:20px;display:flex;align-items:center;gap:8px;color:var(--amber); }
+    .photo-ring { width:110px;height:110px;border-radius:50%;border:3px dashed var(--border-light);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);overflow:hidden;margin:0 auto;background:var(--bg-secondary); }
+    .photo-ring:hover { border-color:var(--amber);background:var(--amber-glow); }
+    .photo-ring img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .photo-ring .photo-placeholder { text-align:center;pointer-events:none; }
+    .photo-ring .photo-placeholder span { font-size:42px;display:block; }
+    .photo-ring .photo-placeholder p { font-size:11px;color:var(--text-muted);margin-top:4px; }
+  </style>
+</head>
+<body>
+<div class="setup-header">
+  <span style="font-size:28px;">🚇</span>
+  <div>
+    <h2>Complete Your Profile</h2>
+    <p>This helps your team identify you and improves collaboration</p>
+  </div>
+</div>
+
+<div class="setup-body">
+  <!-- Steps -->
+  <div class="steps-indicator">
+    <div class="step-dot done" id="s1">✓</div>
+    <div class="step-line done"></div>
+    <div class="step-dot done" id="s2">✓</div>
+    <div class="step-line done"></div>
+    <div class="step-dot active" id="s3">3</div>
+    <div class="step-line"></div>
+    <div class="step-dot pending" id="s4">4</div>
+  </div>
+  <p style="color:var(--text-muted);font-size:13px;margin-top:-28px;margin-bottom:32px;">Account Created → Email Verified → <strong style="color:var(--amber);">Profile Setup</strong> → Dashboard</p>
+
+  <form id="profileForm">
+    <!-- Photo -->
+    <div class="section-card">
+      <h3>📸 Profile Photo</h3>
+      <div class="photo-ring" id="photoRing" onclick="document.getElementById('photoInput').click()">
+        <div class="photo-placeholder" id="photoPlaceholder">
+          <span>👤</span>
+          <p>Click to upload</p>
+        </div>
+        <img id="photoPreview" style="display:none;" alt="Profile photo">
+      </div>
+      <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;">JPG, PNG or GIF · Max 5MB</p>
+      <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
+    </div>
+
+    <!-- Personal Info -->
+    <div class="section-card">
+      <h3>👤 Personal Information</h3>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="fullName" placeholder="Rajesh Kumar" required>
+        </div>
+        <div class="input-group">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="mobileNumber" placeholder="+91 98765 43210" required>
+        </div>
+        <div class="input-group" style="grid-column:1/-1;">
+          <label>Address</label>
+          <textarea id="address" rows="2" placeholder="Your work address or city" style="resize:vertical;"></textarea>
+        </div>
+        <div class="input-group">
+          <label>Experience (years)</label>
+          <input type="text" id="experience" placeholder="e.g. 5 years in tunnel construction">
+        </div>
+        <div class="input-group">
+          <label>Specialization</label>
+          <input type="text" id="specialization" placeholder="e.g. Tunnel boring, Shotcrete">
+        </div>
+        <div class="input-group" style="grid-column:1/-1;">
+          <label>Bio / About</label>
+          <textarea id="bio" rows="2" placeholder="Brief introduction about yourself..." style="resize:vertical;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Info -->
+    <div class="section-card">
+      <h3>🏗️ Company & Role Details</h3>
+      <div class="form-grid">
+        <div class="input-group">
+          <label>Company Name <span class="req">*</span></label>
+          <input type="text" id="companyName" placeholder="e.g. AFCONS Infrastructure" required>
+        </div>
+        <div class="input-group">
+          <label>Company ID / Employee ID</label>
+          <input type="text" id="companyId" placeholder="e.g. EMP-2024-001">
+        </div>
+        <div class="input-group">
+          <label>Department <span class="req">*</span></label>
+          <select id="department" required>
+            <option value="">-- Select Department --</option>
+            <option value="Tunnel Design">Tunnel Design</option>
+            <option value="Safety">Safety</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Site Management">Site Management</option>
+            <option value="Equipment">Equipment</option>
+            <option value="Materials">Materials</option>
+            <option value="Survey">Survey</option>
+            <option value="Administration">Administration</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Role / Designation</label>
+          <input type="text" id="roleInCompany" placeholder="e.g. Site Engineer, Project Manager">
+        </div>
+        <div class="input-group">
+          <label>Emergency Contact</label>
+          <input type="text" id="emergencyContact" placeholder="Name & phone of emergency contact">
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-full btn-lg" id="saveBtn" style="font-size:16px;padding:16px;">
+      🚀 Save Profile & Go to Dashboard
+    </button>
+  </form>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  if (!Auth.isLoggedIn()) window.location.href = 'login.html';
+  const user = Auth.getUser();
+  if (user?.isProfileComplete) window.location.href = 'dashboard.html';
+
+  // Pre-fill if partial
+  if (user?.profile) {
+    const p = user.profile;
+    if (p.fullName) document.getElementById('fullName').value = p.fullName;
+    if (p.mobileNumber) document.getElementById('mobileNumber').value = p.mobileNumber;
+    if (p.companyName) document.getElementById('companyName').value = p.companyName;
+    if (p.department) document.getElementById('department').value = p.department;
+  }
+
+  function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById('photoPreview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('photoPlaceholder').style.display = 'none';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('saveBtn');
+    btn.innerHTML = '<span class="spinner"></span> Saving profile...';
+    btn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('fullName', document.getElementById('fullName').value.trim());
+    formData.append('mobileNumber', document.getElementById('mobileNumber').value.trim());
+    formData.append('address', document.getElementById('address').value.trim());
+    formData.append('companyName', document.getElementById('companyName').value.trim());
+    formData.append('companyId', document.getElementById('companyId').value.trim());
+    formData.append('department', document.getElementById('department').value);
+    formData.append('roleInCompany', document.getElementById('roleInCompany').value.trim());
+    formData.append('bio', document.getElementById('bio').value.trim());
+    formData.append('experience', document.getElementById('experience').value.trim());
+    formData.append('specialization', document.getElementById('specialization').value.trim());
+    formData.append('emergencyContact', document.getElementById('emergencyContact').value.trim());
+
+    const photoFile = document.getElementById('photoInput').files[0];
+    if (photoFile) formData.append('profilePhoto', photoFile);
+
+    try {
+      const data = await API.upload('/users/profile', formData);
+      // Update stored user
+      const updatedUser = { ...Auth.getUser(), isProfileComplete: true, profile: data.user.profile };
+      Auth.setSession(Auth.getToken(), updatedUser);
+      Toast.success('Profile saved! Taking you to dashboard...');
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } catch (err) {
+      Toast.error(err.message);
+      btn.innerHTML = '🚀 Save Profile & Go to Dashboard';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

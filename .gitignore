@@ -1,0 +1,8 @@
+node_modules/
+.env
+tkms/backend/.env
+uploads/
+tkms/backend/uploads/
+downloaded-*
+test-report.*
+*.log
