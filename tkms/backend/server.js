@@ -65,10 +65,9 @@ app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Basic Test Routes
-const frontendPath = path.join(__dirname, '..', '..', 'frontend');
+const frontendPath = __dirname;
 app.use(express.static(frontendPath));
 
-// Basic Test Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
