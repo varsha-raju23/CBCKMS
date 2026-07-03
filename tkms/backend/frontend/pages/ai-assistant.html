@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant — TunnelKMS</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .ai-layout { display:grid; grid-template-columns:280px 1fr; gap:24px; height:calc(100vh - 140px); }
+    @media(max-width:900px){ .ai-layout{grid-template-columns:1fr;} .ai-sidebar{display:none;} }
+
+    .ai-sidebar { display:flex;flex-direction:column;gap:16px; }
+    .sidebar-card { background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px; }
+    .sidebar-card h3 { font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text-secondary); }
+    .suggestion-chip {
+      display:block;width:100%;text-align:left;padding:10px 12px;border-radius:var(--radius-sm);
+      background:var(--bg-secondary);border:1px solid var(--border-light);color:var(--text-secondary);
+      font-size:12px;cursor:pointer;transition:var(--transition);margin-bottom:6px;
+    }
+    .suggestion-chip:hover { background:var(--amber-glow);border-color:var(--amber);color:var(--amber); }
+    .doc-count-badge { background:var(--grad-amber);color:#0a0f1e;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700; }
+
+    .ai-main { display:flex;flex-direction:column;gap:16px; }
+    .ai-header-card { background:linear-gradient(135deg, #0f172a, #1a1035);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;align-items:center;gap:16px; }
+    .ai-robot { font-size:48px;animation:float 3s ease-in-out infinite; }
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+    .ai-header-card h2 { font-size:20px;margin-bottom:4px; }
+    .ai-header-card p { font-size:13px;color:var(--text-secondary); }
+
+    .chat-area { flex:1;display:flex;flex-direction:column;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden; }
+    .chat-msgs { flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px; }
+    .chat-bar { display:flex;gap:10px;padding:16px;border-top:1px solid var(--border);background:var(--bg-secondary); }
+    .chat-bar input { flex:1;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);color:var(--text-primary);font-size:14px;font-family:inherit; }
+    .chat-bar input:focus { border-color:var(--amber);outline:none; }
+    .send-btn { padding:12px 20px;background:var(--grad-amber);border:none;border-radius:var(--radius);color:#0a0f1e;font-weight:700;cursor:pointer;font-size:18px;transition:var(--transition); }
+    .send-btn:hover { opacity:.9;transform:scale(1.05); }
+    .send-btn:disabled { opacity:.4;cursor:not-allowed;transform:none; }
+
+    .welcome-msg { text-align:center;padding:40px 20px; }
+    .welcome-msg .w-icon { font-size:56px;margin-bottom:12px; }
+    .welcome-msg h3 { font-size:18px;margin-bottom:8px; }
+    .welcome-msg p { font-size:13px;color:var(--text-secondary);max-width:400px;margin:0 auto; }
+    .quick-q { display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px; }
+    .quick-q button { padding:8px 14px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:20px;color:var(--text-secondary);font-size:12px;cursor:pointer;transition:var(--transition); }
+    .quick-q button:hover { border-color:var(--amber);color:var(--amber);background:var(--amber-glow); }
+
+    /* Message bubbles */
+    .msg-user { display:flex;justify-content:flex-end;gap:10px;align-items:flex-end; }
+    .msg-ai { display:flex;gap:10px;align-items:flex-start; }
+    .msg-bubble-user { background:var(--grad-amber);color:#0a0f1e;padding:12px 16px;border-radius:18px 18px 4px 18px;max-width:70%;font-size:14px;line-height:1.5; }
+    .msg-bubble-ai { background:var(--bg-secondary);border:1px solid var(--border-light);padding:14px 18px;border-radius:18px 18px 18px 4px;max-width:80%;font-size:14px;line-height:1.7; }
+    .msg-avatar { width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--bg-card);border:1px solid var(--border-light); }
+    .msg-bubble-ai h4 { font-size:13px;color:var(--text-muted);margin-bottom:8px; }
+    .ref-chips { display:flex;flex-wrap:wrap;gap:6px;margin-top:10px; }
+    .ref-chip { background:var(--amber-glow);color:var(--amber);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:500;border:1px solid rgba(245,158,11,.2); }
+    .typing-wrap { display:flex;align-items:center;gap:8px;padding:4px 0; }
+    .typing-dots { display:flex;gap:4px; }
+    .t-dot { width:8px;height:8px;border-radius:50%;background:var(--amber);animation:t .6s ease infinite; }
+    .t-dot:nth-child(2){animation-delay:.2s;} .t-dot:nth-child(3){animation-delay:.4s;}
+    @keyframes t{0%,100%{opacity:.3;transform:translateY(0);}50%{opacity:1;transform:translateY(-4px);}}
+
+    .clear-btn { background:none;border:1px solid var(--border-light);color:var(--text-muted);padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;transition:var(--transition); }
+    .clear-btn:hover { border-color:var(--danger);color:var(--danger); }
+  </style>
+</head>
+<body>
+<div class="page-wrapper" style="margin-top:64px;">
+  <div class="main-content" style="max-width:1400px;">
+    <div class="page-header" style="margin-bottom:20px;">
+      <h1>🤖 AI Assistant</h1>
+      <p>Ask questions about your uploaded tunnel construction documents — powered by Google Gemini</p>
+    </div>
+
+    <div class="ai-layout">
+      <!-- Sidebar -->
+      <div class="ai-sidebar">
+        <div class="sidebar-card">
+          <h3>📚 Knowledge Base</h3>
+          <div id="docSummary" style="color:var(--text-muted);font-size:13px;">Loading...</div>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>💡 Suggested Questions</h3>
+          <button class="suggestion-chip" onclick="sendSuggestion(this.textContent)">What is the total length of the tunnel project?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this.textContent)">What safety measures are mentioned in the reports?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this.textContent)">List all equipment details from the uploaded documents</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this.textContent)">What is the daily progress on the tunnel boring?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this.textContent)">Summarize the site inspection findings</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this.textContent)">What materials have been used in the project?</button>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>⚡ Tips</h3>
+          <ul style="font-size:12px;color:var(--text-secondary);padding-left:16px;display:flex;flex-direction:column;gap:8px;">
+            <li>AI only uses your uploaded documents</li>
+            <li>Be specific about project names or sections</li>
+            <li>Ask for document references if needed</li>
+            <li>Upload more docs for better answers</li>
+          </ul>
+        </div>
+
+        <button class="clear-btn" onclick="clearChat()">🗑️ Clear Chat History</button>
+      </div>
+
+      <!-- Main Chat -->
+      <div class="ai-main">
+        <div class="ai-header-card">
+          <div class="ai-robot">🤖</div>
+          <div>
+            <h2>TunnelKMS AI Assistant</h2>
+            <p>Powered by Google Gemini · Answers based only on your uploaded documents</p>
+          </div>
+        </div>
+
+        <div class="chat-area">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);">
+            <div style="font-size:13px;color:var(--text-muted);">💬 Chat Session</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success);">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--success);"></div>
+              AI Online
+            </div>
+          </div>
+
+          <div class="chat-msgs" id="chatMsgs">
+            <div class="welcome-msg">
+              <div class="w-icon">🚇</div>
+              <h3>Hello! I'm your TunnelKMS AI Assistant</h3>
+              <p>I can answer questions based on your uploaded tunnel construction documents. Try asking me something!</p>
+              <div class="quick-q">
+                <button onclick="sendSuggestion('What documents are available?')">What documents are available?</button>
+                <button onclick="sendSuggestion('Summarize the latest safety report')">Summarize latest safety report</button>
+                <button onclick="sendSuggestion('What is the tunnel design specification?')">Tunnel design specs?</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-bar">
+            <input type="text" id="chatInput" placeholder="Ask about your tunnel documents... (Press Enter to send)"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}">
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🚇 TunnelKMS</div>
+      <div class="footer-copy">© 2025 TunnelKMS · AI powered by Google Gemini</div>
+    </div>
+  </footer>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/nav.js"></script>
+<script>
+  const sessionId = 'session_' + Date.now();
+  let isTyping = false;
+
+  async function init() {
+    await Nav.build('ai');
+    loadDocSummary();
+  }
+
+  async function loadDocSummary() {
+    try {
+      const data = await API.get('/documents/stats');
+      const s = data.stats;
+      document.getElementById('docSummary').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Total documents</span>
+            <span class="doc-count-badge">${s.total}</span>
+          </div>
+          ${(s.byType||[]).slice(0,5).map(t=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+            <span style="color:${Format.docTypeColor(t._id)};">● ${t._id}</span>
+            <span style="font-weight:600;">${t.count}</span>
+          </div>`).join('')}
+          <a href="documents.html" style="font-size:12px;color:var(--amber);margin-top:4px;">View all documents →</a>
+        </div>
+      `;
+    } catch(e) {
+      document.getElementById('docSummary').textContent = 'Could not load document stats.';
+    }
+  }
+
+  function appendMessage(role, content, references=[]) {
+    const msgs = document.getElementById('chatMsgs');
+    // Remove welcome msg if present
+    const welcome = msgs.querySelector('.welcome-msg');
+    if (welcome) welcome.remove();
+
+    const div = document.createElement('div');
+    div.className = role === 'user' ? 'msg-user' : 'msg-ai';
+    div.style.animation = 'fadeIn .3s ease';
+
+    if (role === 'user') {
+      div.innerHTML = `
+        <div class="msg-bubble-user">${escapeHtml(content)}</div>
+        <div class="msg-avatar">👤</div>
+      `;
+    } else {
+      const refsHtml = references?.length ? `
+        <div class="ref-chips">
+          <span style="font-size:11px;color:var(--text-muted);">📎 References:</span>
+          ${references.map(r=>`<span class="ref-chip" title="${r.projectName}">${r.documentName}</span>`).join('')}
+        </div>` : '';
+      div.innerHTML = `
+        <div class="msg-avatar">🤖</div>
+        <div class="msg-bubble-ai">
+          <h4>TunnelKMS AI</h4>
+          <div>${formatAIText(content)}</div>
+          ${refsHtml}
+        </div>
+      `;
+    }
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function showTyping() {
+    const msgs = document.getElementById('chatMsgs');
+    const div = document.createElement('div');
+    div.className = 'msg-ai';
+    div.id = 'typingIndicator';
+    div.innerHTML = `
+      <div class="msg-avatar">🤖</div>
+      <div class="msg-bubble-ai" style="padding:12px 16px;">
+        <div class="typing-wrap">
+          <span style="font-size:12px;color:var(--text-muted);">AI is thinking</span>
+          <div class="typing-dots">
+            <div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>
+          </div>
+        </div>
+      </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    document.getElementById('typingIndicator')?.remove();
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg || isTyping) return;
+
+    input.value = '';
+    isTyping = true;
+    document.getElementById('sendBtn').disabled = true;
+
+    appendMessage('user', msg);
+    showTyping();
+
+    try {
+      const data = await API.post('/ai/chat', { message: msg, sessionId });
+      removeTyping();
+      appendMessage('assistant', data.answer, data.references);
+    } catch(err) {
+      removeTyping();
+      appendMessage('assistant', '❌ Error: ' + err.message);
+    }
+
+    isTyping = false;
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
+
+  function sendSuggestion(text) {
+    document.getElementById('chatInput').value = text;
+    sendMessage();
+  }
+
+  async function clearChat() {
+    if (!confirm('Clear all chat history?')) return;
+    try {
+      await API.delete('/ai/history');
+      document.getElementById('chatMsgs').innerHTML = `
+        <div class="welcome-msg">
+          <div class="w-icon">🚇</div>
+          <h3>Chat cleared. Start a new conversation!</h3>
+          <p>Ask me anything about your tunnel construction documents.</p>
+        </div>`;
+      Toast.success('Chat history cleared');
+    } catch(e) { Toast.error(e.message); }
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+
+  function formatAIText(text) {
+    // Basic markdown-like formatting
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p style="margin-top:8px;">')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>').replace(/$/, '</p>');
+  }
+
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Email Verification</title>
+</head>
+
+<body>
+  <h2>Email Verification</h2>
+  <p id="message">Verifying...</p>
+
+  <script>
+    const API_BASE = 'https://tunnelkms-backend.onrender.com';
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    async function verify() {
+      if (!token) {
+        document.getElementById('message').innerText = 'Invalid verification link';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/verify-email?token=${token}`);
+        const data = await res.json();
+
+        document.getElementById('message').innerText =
+          data.message || 'Email verified successfully';
+      } catch (e) {
+        document.getElementById('message').innerText =
+          'Backend connection failed';
+      }
+    }
+
+    verify();
+  </script>
+</body>
+
+</html>

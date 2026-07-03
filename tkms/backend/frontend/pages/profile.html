@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — TunnelKMS</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .profile-layout { display:grid;grid-template-columns:320px 1fr;gap:24px; }
+    @media(max-width:900px){ .profile-layout{grid-template-columns:1fr;} }
+
+    .profile-card { background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-align:center; }
+    .profile-avatar { width:110px;height:110px;border-radius:50%;margin:0 auto 16px;border:3px solid var(--amber);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--grad-amber);font-size:40px;font-weight:700;color:#0a0f1e; }
+    .profile-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .profile-name { font-size:22px;font-weight:700;margin-bottom:4px; }
+    .profile-email { font-size:13px;color:var(--text-muted);margin-bottom:12px; }
+    .profile-stats { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;border-top:1px solid var(--border);padding-top:20px; }
+    .profile-stat { text-align:center; }
+    .profile-stat .val { font-size:24px;font-weight:800;color:var(--amber); }
+    .profile-stat .lbl { font-size:11px;color:var(--text-muted);margin-top:2px; }
+
+    .tabs { display:flex;gap:4px;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:4px;margin-bottom:20px; }
+    .tab { flex:1;text-align:center;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);transition:var(--transition); }
+    .tab.active { background:var(--bg-card);color:var(--text-primary);box-shadow:var(--shadow); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block;animation:fadeIn .3s ease; }
+
+    .info-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    @media(max-width:600px){ .info-grid{grid-template-columns:1fr;} }
+    .info-row { display:flex;flex-direction:column;gap:4px; }
+    .info-row .il { font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:600; }
+    .info-row .iv { font-size:14px;color:var(--text-primary);font-weight:500; }
+
+    .doc-mini { display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);margin-bottom:8px; }
+    .doc-mini:hover { border-color:var(--amber);background:var(--amber-glow); }
+    .doc-mini .dm-icon { font-size:20px;flex-shrink:0; }
+    .doc-mini .dm-info { flex:1;min-width:0; }
+    .doc-mini .dm-info .dm-name { font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .doc-mini .dm-info .dm-sub { font-size:11px;color:var(--text-muted); }
+
+    .pwd-form { display:flex;flex-direction:column;gap:16px;max-width:400px; }
+    .password-toggle { position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px; }
+  </style>
+</head>
+<body>
+<div class="page-wrapper" style="margin-top:64px;">
+  <div class="main-content">
+    <div class="page-header">
+      <h1>👤 My Profile</h1>
+      <p>Manage your account details and preferences</p>
+    </div>
+
+    <div class="profile-layout">
+      <!-- Left: Profile Card -->
+      <div>
+        <div class="profile-card">
+          <div class="profile-avatar" id="avatarEl">?</div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-email" id="profileEmail">—</div>
+          <span class="badge" id="profileRole" style="font-size:12px;">—</span>
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="val" id="stat-uploads">—</div><div class="lbl">Uploaded</div></div>
+            <div class="profile-stat"><div class="val" id="stat-viewed">—</div><div class="lbl">Viewed</div></div>
+          </div>
+          <button onclick="document.querySelector('[data-tab=edit]').click()" class="btn btn-primary btn-full" style="margin-top:20px;">✏️ Edit Profile</button>
+          <button onclick="Nav.logout()" class="btn btn-ghost btn-full" style="margin-top:10px;">🚪 Logout</button>
+        </div>
+      </div>
+
+      <!-- Right: Tabs -->
+      <div>
+        <div class="tabs">
+          <div class="tab active" data-tab="info" onclick="switchTab('info',this)">ℹ️ Info</div>
+          <div class="tab" data-tab="uploads" onclick="switchTab('uploads',this)">📁 Uploads</div>
+          <div class="tab" data-tab="viewed" onclick="switchTab('viewed',this)">👁️ Viewed</div>
+          <div class="tab" data-tab="edit" onclick="switchTab('edit',this)">✏️ Edit</div>
+          <div class="tab" data-tab="security" onclick="switchTab('security',this)">🔒 Security</div>
+        </div>
+
+        <!-- Info Tab -->
+        <div class="tab-panel card active" id="tab-info">
+          <div class="info-grid" id="infoGrid">
+            <div style="grid-column:1/-1;color:var(--text-muted);">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Uploads Tab -->
+        <div class="tab-panel card" id="tab-uploads">
+          <h3 style="margin-bottom:16px;">📤 My Uploaded Documents</h3>
+          <div id="myUploads"><div style="color:var(--text-muted);font-size:13px;">Loading...</div></div>
+        </div>
+
+        <!-- Viewed Tab -->
+        <div class="tab-panel card" id="tab-viewed">
+          <h3 style="margin-bottom:16px;">👁️ Recently Viewed Documents</h3>
+          <div id="myViewed"><div style="color:var(--text-muted);font-size:13px;">Loading...</div></div>
+        </div>
+
+        <!-- Edit Tab -->
+        <div class="tab-panel card" id="tab-edit">
+          <h3 style="margin-bottom:20px;">✏️ Edit Profile</h3>
+          <form id="editForm">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;">
+              <div class="profile-avatar" id="editAvatarPreview" style="cursor:pointer;" onclick="document.getElementById('editPhoto').click()">?</div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('editPhoto').click()">📸 Change Photo</button>
+              <input type="file" id="editPhoto" accept="image/*" style="display:none;" onchange="previewEditPhoto(this)">
+            </div>
+            <div class="form-grid">
+              <div class="input-group"><label>Full Name <span class="req">*</span></label><input type="text" id="e_fullName"></div>
+              <div class="input-group"><label>Mobile Number <span class="req">*</span></label><input type="text" id="e_mobile"></div>
+              <div class="input-group" style="grid-column:1/-1;"><label>Address</label><textarea id="e_address" rows="2" style="resize:vertical;"></textarea></div>
+              <div class="input-group"><label>Company Name <span class="req">*</span></label><input type="text" id="e_company"></div>
+              <div class="input-group"><label>Company ID</label><input type="text" id="e_companyId"></div>
+              <div class="input-group"><label>Department <span class="req">*</span></label>
+                <select id="e_dept">
+                  <option>Tunnel Design</option><option>Safety</option><option>Engineering</option><option>Site Management</option><option>Equipment</option><option>Materials</option><option>Survey</option><option>Administration</option><option>Other</option>
+                </select>
+              </div>
+              <div class="input-group"><label>Role / Designation</label><input type="text" id="e_role"></div>
+              <div class="input-group"><label>Experience</label><input type="text" id="e_exp"></div>
+              <div class="input-group"><label>Specialization</label><input type="text" id="e_spec"></div>
+              <div class="input-group" style="grid-column:1/-1;"><label>Bio</label><textarea id="e_bio" rows="2" style="resize:vertical;"></textarea></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:20px;" id="saveProfileBtn">💾 Save Changes</button>
+          </form>
+        </div>
+
+        <!-- Security Tab -->
+        <div class="tab-panel card" id="tab-security">
+          <h3 style="margin-bottom:20px;">🔒 Change Password</h3>
+          <div class="pwd-form">
+            <div class="input-group"><label>Current Password</label><div class="input-icon" style="position:relative;"><span class="icon">🔒</span><input type="password" id="curPwd" placeholder="Current password" style="padding-right:36px;"><button type="button" class="password-toggle" onclick="togglePwdField('curPwd',this)">👁️</button></div></div>
+            <div class="input-group"><label>New Password</label><div class="input-icon" style="position:relative;"><span class="icon">🔑</span><input type="password" id="newPwd" placeholder="Min. 8 characters" style="padding-right:36px;"><button type="button" class="password-toggle" onclick="togglePwdField('newPwd',this)">👁️</button></div></div>
+            <div class="input-group"><label>Confirm New Password</label><div class="input-icon"><span class="icon">🔑</span><input type="password" id="confPwd" placeholder="Repeat new password"></div></div>
+            <button onclick="changePassword()" class="btn btn-primary" id="changePwdBtn">🔒 Update Password</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🚇 TunnelKMS</div>
+      <div class="footer-copy">© 2025 TunnelKMS</div>
+    </div>
+  </footer>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/nav.js"></script>
+<script>
+  async function initProfile() {
+    await Nav.build('profile');
+    const data = await API.get('/users/me');
+    const user = data.user;
+    const p = user.profile || {};
+    const roleColor = Format.roleColor(user.role);
+
+    // Left card
+    if (p.profilePhoto) {
+      document.getElementById('avatarEl').innerHTML = `<img src="http://localhost:5000${p.profilePhoto}" alt="" onerror="this.style.display='none'">`;
+    } else {
+      document.getElementById('avatarEl').textContent = (p.fullName||user.email).charAt(0).toUpperCase();
+    }
+    document.getElementById('profileName').textContent = p.fullName || 'No name set';
+    document.getElementById('profileEmail').textContent = user.email;
+    document.getElementById('profileRole').innerHTML = `<span style="background:${roleColor}22;color:${roleColor};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${user.role?.toUpperCase()}</span>`;
+
+    // Stats
+    try {
+      const [uploads, viewed] = await Promise.all([
+        API.get('/users/my-documents'),
+        API.get('/users/viewed-documents')
+      ]);
+      document.getElementById('stat-uploads').textContent = uploads.documents?.length || 0;
+      document.getElementById('stat-viewed').textContent = viewed.documents?.length || 0;
+      renderMyUploads(uploads.documents);
+      renderViewed(viewed.documents);
+    } catch(e) {}
+
+    // Info tab
+    document.getElementById('infoGrid').innerHTML = [
+      {l:'Full Name',v:p.fullName||'—'},{l:'Email',v:user.email},{l:'Mobile',v:p.mobileNumber||'—'},
+      {l:'Department',v:p.department||'—'},{l:'Company',v:p.companyName||'—'},{l:'Company ID',v:p.companyId||'—'},
+      {l:'Role / Designation',v:p.roleInCompany||'—'},{l:'Experience',v:p.experience||'—'},
+      {l:'Specialization',v:p.specialization||'—'},{l:'Address',v:p.address||'—'},
+      {l:'Joined',v:Format.date(user.createdAt)},{l:'Last Login',v:Format.dateTime(user.lastLogin)||'—'}
+    ].map(i=>`<div class="info-row"><div class="il">${i.l}</div><div class="iv">${i.v}</div></div>`).join('');
+
+    // Pre-fill edit form
+    document.getElementById('e_fullName').value = p.fullName||'';
+    document.getElementById('e_mobile').value = p.mobileNumber||'';
+    document.getElementById('e_address').value = p.address||'';
+    document.getElementById('e_company').value = p.companyName||'';
+    document.getElementById('e_companyId').value = p.companyId||'';
+    document.getElementById('e_dept').value = p.department||'';
+    document.getElementById('e_role').value = p.roleInCompany||'';
+    document.getElementById('e_exp').value = p.experience||'';
+    document.getElementById('e_spec').value = p.specialization||'';
+    document.getElementById('e_bio').value = p.bio||'';
+    if (p.profilePhoto) {
+      document.getElementById('editAvatarPreview').innerHTML = `<img src="http://localhost:5000${p.profilePhoto}" alt="">`;
+    } else {
+      document.getElementById('editAvatarPreview').textContent = (p.fullName||'U').charAt(0).toUpperCase();
+    }
+  }
+
+  function renderMyUploads(docs) {
+    document.getElementById('myUploads').innerHTML = docs?.length ? docs.map(doc=>`
+      <div class="doc-mini" onclick="window.location.href='documents.html?view=${doc._id}'">
+        <span class="dm-icon">${Format.fileIcon(doc.originalName)}</span>
+        <div class="dm-info">
+          <div class="dm-name">${doc.originalName}</div>
+          <div class="dm-sub">${doc.projectName} · ${doc.documentType} · ${Format.timeAgo(doc.createdAt)}</div>
+        </div>
+        <span class="doc-id-tag">${doc.documentId}</span>
+      </div>`).join('')
+      : '<div style="color:var(--text-muted);font-size:13px;">No uploads yet. <a href="dashboard.html">Upload your first document →</a></div>';
+  }
+
+  function renderViewed(docs) {
+    document.getElementById('myViewed').innerHTML = docs?.length ? docs.map(doc=>`
+      <div class="doc-mini" onclick="window.location.href='documents.html?view=${doc._id}'">
+        <span class="dm-icon">${Format.fileIcon(doc.originalName)}</span>
+        <div class="dm-info">
+          <div class="dm-name">${doc.originalName}</div>
+          <div class="dm-sub">${doc.projectName} · ${Format.timeAgo(doc.lastViewedAt)}</div>
+        </div>
+      </div>`).join('')
+      : '<div style="color:var(--text-muted);font-size:13px;">No documents viewed yet.</div>';
+  }
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-'+name).classList.add('active');
+  }
+
+  function previewEditPhoto(input) {
+    if (input.files[0]) {
+      const r = new FileReader();
+      r.onload = e => { document.getElementById('editAvatarPreview').innerHTML = `<img src="${e.target.result}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; };
+      r.readAsDataURL(input.files[0]);
+    }
+  }
+
+  document.getElementById('editForm').addEventListener('submit', async(e) => {
+    e.preventDefault();
+    const btn = document.getElementById('saveProfileBtn');
+    btn.innerHTML='<span class="spinner"></span> Saving...'; btn.disabled=true;
+    const fd=new FormData();
+    fd.append('fullName',document.getElementById('e_fullName').value);
+    fd.append('mobileNumber',document.getElementById('e_mobile').value);
+    fd.append('address',document.getElementById('e_address').value);
+    fd.append('companyName',document.getElementById('e_company').value);
+    fd.append('companyId',document.getElementById('e_companyId').value);
+    fd.append('department',document.getElementById('e_dept').value);
+    fd.append('roleInCompany',document.getElementById('e_role').value);
+    fd.append('experience',document.getElementById('e_exp').value);
+    fd.append('specialization',document.getElementById('e_spec').value);
+    fd.append('bio',document.getElementById('e_bio').value);
+    const photo=document.getElementById('editPhoto').files[0];
+    if(photo) fd.append('profilePhoto',photo);
+    try {
+      const data=await API.upload('/users/profile',fd);
+      Auth.setSession(Auth.getToken(),{...Auth.getUser(),profile:data.user.profile,isProfileComplete:true});
+      Toast.success('Profile updated!');
+      btn.innerHTML='💾 Save Changes'; btn.disabled=false;
+      setTimeout(()=>location.reload(),1000);
+    } catch(err) { Toast.error(err.message); btn.innerHTML='💾 Save Changes'; btn.disabled=false; }
+  });
+
+  async function changePassword() {
+    const cur=document.getElementById('curPwd').value;
+    const np=document.getElementById('newPwd').value;
+    const cp=document.getElementById('confPwd').value;
+    if(!cur||!np||!cp){Toast.warning('Fill all password fields');return;}
+    if(np!==cp){Toast.error('New passwords do not match');return;}
+    if(np.length<8){Toast.error('New password must be at least 8 characters');return;}
+    const btn=document.getElementById('changePwdBtn');
+    btn.innerHTML='<span class="spinner"></span> Updating...'; btn.disabled=true;
+    try {
+      await API.put('/users/change-password',{currentPassword:cur,newPassword:np});
+      Toast.success('Password changed successfully!');
+      document.getElementById('curPwd').value=''; document.getElementById('newPwd').value=''; document.getElementById('confPwd').value='';
+    } catch(err){Toast.error(err.message);}
+    btn.innerHTML='🔒 Update Password'; btn.disabled=false;
+  }
+
+  function togglePwdField(id,btn){const i=document.getElementById(id);i.type=i.type==='text'?'password':'text';btn.textContent=i.type==='text'?'🙈':'👁️';}
+
+  initProfile();
+</script>
+</body>
+</html>

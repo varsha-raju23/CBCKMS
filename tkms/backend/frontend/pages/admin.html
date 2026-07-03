@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — TunnelKMS</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .admin-banner { background:linear-gradient(135deg,#1a0505,#2d0a0a);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:14px; }
+    .admin-banner .icon { font-size:32px; }
+    .admin-banner h2 { font-size:18px;margin-bottom:2px; }
+    .admin-banner p { color:var(--text-secondary);font-size:13px; }
+
+    .admin-tabs { display:flex;gap:4px;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:4px;margin-bottom:24px;flex-wrap:wrap; }
+    .a-tab { padding:9px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);transition:var(--transition); }
+    .a-tab.active { background:var(--bg-card);color:var(--text-primary);box-shadow:var(--shadow); }
+    .a-panel { display:none; }
+    .a-panel.active { display:block;animation:fadeIn .3s ease; }
+
+    .user-row { display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;transition:var(--transition); }
+    .user-row:hover { border-color:var(--border-light); }
+    .u-avatar { width:40px;height:40px;border-radius:50%;background:var(--grad-amber);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0f1e;flex-shrink:0;overflow:hidden; }
+    .u-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .u-info { flex:1;min-width:0; }
+    .u-info .u-name { font-size:14px;font-weight:600; }
+    .u-info .u-email { font-size:12px;color:var(--text-muted); }
+    .u-actions { display:flex;gap:6px;align-items:center;flex-wrap:wrap; }
+    .role-select { background:var(--bg-card);border:1px solid var(--border-light);color:var(--text-primary);padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer; }
+    .role-select:focus { outline:none;border-color:var(--amber); }
+
+    .doc-admin-row { display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px; }
+    .doc-admin-row:hover { border-color:var(--border-light); }
+
+    .admin-filters { display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap; }
+    .admin-filters input, .admin-filters select { padding:9px 12px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-sm);color:var(--text-primary);font-size:13px; }
+    .admin-filters input:focus,.admin-filters select:focus { border-color:var(--amber);outline:none; }
+
+    .stat-card:nth-child(1){--accent:var(--grad-amber);}
+    .stat-card:nth-child(2){--accent:var(--grad-blue);}
+    .stat-card:nth-child(3){--accent:var(--grad-success);}
+    .stat-card:nth-child(4){--accent:var(--grad-danger,linear-gradient(135deg,#ef4444,#dc2626));}
+    .stat-card:nth-child(5){--accent:var(--grad-purple);}
+    .stat-card:nth-child(6){--accent:linear-gradient(135deg,#f97316,#ea580c);}
+  </style>
+</head>
+<body>
+<div class="page-wrapper" style="margin-top:64px;">
+  <div class="main-content">
+
+    <div class="admin-banner">
+      <div class="icon">🛡️</div>
+      <div>
+        <h2>Admin Control Panel</h2>
+        <p>Manage users, documents, and monitor system analytics</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="adminStats" style="margin-bottom:24px;">
+      <div class="stat-card"><div class="stat-icon">📁</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Total Documents</div></div>
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Total Users</div></div>
+      <div class="stat-card"><div class="stat-icon">⚙️</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Engineers</div></div>
+      <div class="stat-card"><div class="stat-icon">📋</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Managers</div></div>
+      <div class="stat-card"><div class="stat-icon">👁️</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Viewers</div></div>
+      <div class="stat-card"><div class="stat-icon">🛡️</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Admins</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <div class="a-tab active" onclick="switchAdminTab('users',this)">👥 Users</div>
+      <div class="a-tab" onclick="switchAdminTab('documents',this)">📁 Documents</div>
+      <div class="a-tab" onclick="switchAdminTab('analytics',this)">📊 Analytics</div>
+      <div class="a-tab" onclick="switchAdminTab('recent',this)">🕐 Recent Activity</div>
+    </div>
+
+    <!-- Users Panel -->
+    <div class="a-panel active card" id="panel-users">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h3>👥 User Management</h3>
+        <div class="admin-filters">
+          <input type="text" id="userSearch" placeholder="Search name or email..." oninput="debounce(loadUsers,400)()">
+          <select id="userRoleFilter" onchange="loadUsers()">
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option><option value="manager">Manager</option>
+            <option value="engineer">Engineer</option><option value="viewer">Viewer</option>
+          </select>
+        </div>
+      </div>
+      <div id="usersList"><div style="color:var(--text-muted);">Loading users...</div></div>
+      <div class="pagination" id="usersPagination"></div>
+    </div>
+
+    <!-- Documents Panel -->
+    <div class="a-panel card" id="panel-documents">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h3>📁 Document Management</h3>
+        <div class="admin-filters">
+          <input type="text" id="docSearch" placeholder="Search documents..." oninput="debounce(loadAdminDocs,400)()">
+          <select id="docTypeFilter" onchange="loadAdminDocs()">
+            <option value="">All Types</option>
+            <option>Tunnel Design</option><option>Safety Reports</option><option>Daily Progress Reports</option>
+            <option>Site Inspection</option><option>Equipment Details</option><option>Material Reports</option>
+            <option>Project Drawings</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div id="adminDocsList"><div style="color:var(--text-muted);">Loading documents...</div></div>
+      <div class="pagination" id="docsPagination"></div>
+    </div>
+
+    <!-- Analytics Panel -->
+    <div class="a-panel card" id="panel-analytics">
+      <h3 style="margin-bottom:20px;">📊 System Analytics</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="analyticsContent">
+        <div style="color:var(--text-muted);">Loading analytics...</div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Panel -->
+    <div class="a-panel card" id="panel-recent">
+      <h3 style="margin-bottom:20px;">🕐 Recent Activity</h3>
+      <div id="recentActivity"><div style="color:var(--text-muted);">Loading...</div></div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🚇 TunnelKMS Admin</div>
+      <div class="footer-copy">© 2025 TunnelKMS</div>
+    </div>
+  </footer>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/nav.js"></script>
+<script>
+  let usersPage=1, docsPage=1;
+
+  async function initAdmin() {
+    await Nav.build('admin');
+    const user = Auth.getUser();
+    if (user?.role !== 'admin') {
+      Toast.error('Admin access required');
+      setTimeout(() => window.location.href='dashboard.html', 1500);
+      return;
+    }
+    await loadAdminStats();
+    await loadUsers();
+  }
+
+  async function loadAdminStats() {
+    try {
+      const data = await API.get('/admin/stats');
+      const s = data.stats;
+      document.getElementById('adminStats').innerHTML = `
+        <div class="stat-card"><div class="stat-icon">📁</div><div class="stat-value">${s.totalDocs}</div><div class="stat-label">Total Documents</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">${s.totalUsers}</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-card"><div class="stat-icon">⚙️</div><div class="stat-value">${s.totalEngineers}</div><div class="stat-label">Engineers</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${s.totalManagers}</div><div class="stat-label">Managers</div></div>
+        <div class="stat-card"><div class="stat-icon">👁️</div><div class="stat-value">${s.totalViewers}</div><div class="stat-label">Viewers</div></div>
+        <div class="stat-card"><div class="stat-icon">🛡️</div><div class="stat-value">${s.totalAdmins}</div><div class="stat-label">Admins</div></div>
+      `;
+
+      // Analytics content
+      const byType = (s.byType||[]).slice(0,8);
+      const maxT = Math.max(...byType.map(t=>t.count),1);
+      const byDept = (s.byDept||[]).slice(0,8);
+      const maxD = Math.max(...byDept.map(t=>t.count),1);
+
+      document.getElementById('analyticsContent').innerHTML = `
+        <div>
+          <h4 style="margin-bottom:14px;font-size:15px;">📄 Documents by Type</h4>
+          ${byType.map(t=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;">
+              <div style="width:140px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t._id}</div>
+              <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+                <div style="width:${(t.count/maxT*100).toFixed(0)}%;height:100%;background:${Format.docTypeColor(t._id)};border-radius:4px;"></div>
+              </div>
+              <div style="width:28px;text-align:right;font-weight:600;">${t.count}</div>
+            </div>`).join('')}
+        </div>
+        <div>
+          <h4 style="margin-bottom:14px;font-size:15px;">🏢 Documents by Department</h4>
+          ${byDept.map(t=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;">
+              <div style="width:140px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t._id}</div>
+              <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+                <div style="width:${(t.count/maxD*100).toFixed(0)}%;height:100%;background:var(--amber);border-radius:4px;"></div>
+              </div>
+              <div style="width:28px;text-align:right;font-weight:600;">${t.count}</div>
+            </div>`).join('')}
+        </div>
+        <div>
+          <h4 style="margin-bottom:14px;font-size:15px;">🏆 Most Viewed Documents</h4>
+          ${(s.mostViewed||[]).map((d,i)=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-secondary);border-radius:8px;margin-bottom:8px;font-size:13px;">
+              <span style="color:var(--amber);font-weight:700;width:18px;">${i+1}.</span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.originalName}</div>
+                <div style="color:var(--text-muted);font-size:11px;">${d.projectName}</div>
+              </div>
+              <span style="color:var(--amber);font-weight:700;">👁️ ${d.viewCount}</span>
+            </div>`).join('')}
+        </div>
+        <div>
+          <h4 style="margin-bottom:14px;font-size:15px;">👤 Recent Users</h4>
+          ${(s.recentUsers||[]).map(u=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-secondary);border-radius:8px;margin-bottom:8px;font-size:13px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--grad-amber);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0f1e;font-size:12px;flex-shrink:0;">
+                ${(u.profile?.fullName||u.email).charAt(0).toUpperCase()}
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;">${u.profile?.fullName||'—'}</div>
+                <div style="color:var(--text-muted);font-size:11px;">${u.email}</div>
+              </div>
+              <span class="badge" style="background:${Format.roleColor(u.role)}22;color:${Format.roleColor(u.role)};font-size:10px;">${u.role}</span>
+            </div>`).join('')}
+        </div>
+      `;
+
+      // Recent activity
+      document.getElementById('recentActivity').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <h4 style="font-size:15px;margin-bottom:8px;">📤 Recent Uploads</h4>
+          ${(s.recentDocs||[]).map(d=>`
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-secondary);border-radius:8px;font-size:13px;">
+              <span>${Format.fileIcon(d.originalName)}</span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.originalName}</div>
+                <div style="color:var(--text-muted);font-size:11px;">by ${d.uploadedByName||'—'} · ${d.projectName} · <span style="color:${Format.docTypeColor(d.documentType)};">${d.documentType}</span></div>
+              </div>
+              <div style="color:var(--text-muted);font-size:11px;white-space:nowrap;">${Format.timeAgo(d.createdAt)}</div>
+            </div>`).join('')}
+        </div>
+      `;
+    } catch(err) {
+      console.error(err);
+      Toast.error('Failed to load admin stats: ' + err.message);
+    }
+  }
+
+  async function loadUsers(page=1) {
+    usersPage=page;
+    const search=document.getElementById('userSearch').value;
+    const role=document.getElementById('userRoleFilter').value;
+    const params=new URLSearchParams({page,limit:10});
+    if(search) params.append('search',search);
+    if(role) params.append('role',role);
+    try {
+      const data=await API.get('/admin/users?'+params);
+      document.getElementById('usersList').innerHTML = data.users.map(u=>`
+        <div class="user-row">
+          <div class="u-avatar">
+            ${u.profile?.profilePhoto?`<img src="http://localhost:5000${u.profile.profilePhoto}" alt="" onerror="this.style.display='none'">`:''}
+            ${(u.profile?.fullName||u.email).charAt(0).toUpperCase()}
+          </div>
+          <div class="u-info">
+            <div class="u-name">${u.profile?.fullName||'Profile not set'} ${!u.isVerified?'<span style="color:var(--warning);font-size:11px;">(unverified)</span>':''}</div>
+            <div class="u-email">${u.email} · ${u.profile?.department||'—'} · ${u.profile?.companyName||'—'}</div>
+          </div>
+          <div class="u-actions">
+            <select class="role-select" onchange="updateRole('${u._id}',this.value)" title="Change role">
+              <option value="admin" ${u.role==='admin'?'selected':''}>🛡️ Admin</option>
+              <option value="manager" ${u.role==='manager'?'selected':''}>📋 Manager</option>
+              <option value="engineer" ${u.role==='engineer'?'selected':''}>⚙️ Engineer</option>
+              <option value="viewer" ${u.role==='viewer'?'selected':''}>👁️ Viewer</option>
+            </select>
+            <button onclick="toggleUser('${u._id}',this)" class="btn btn-sm ${u.isActive?'btn-secondary':'btn-success'}">${u.isActive?'🚫 Deactivate':'✅ Activate'}</button>
+          </div>
+        </div>`).join('') || '<div style="color:var(--text-muted);">No users found</div>';
+
+      // Pagination
+      const pages=data.pages;
+      if(pages>1){
+        document.getElementById('usersPagination').innerHTML=
+          Array.from({length:pages},(_,i)=>`<button class="${i+1===usersPage?'active':''}" onclick="loadUsers(${i+1})">${i+1}</button>`).join('');
+      }
+    } catch(e) { Toast.error(e.message); }
+  }
+
+  async function loadAdminDocs(page=1) {
+    docsPage=page;
+    const search=document.getElementById('docSearch').value;
+    const type=document.getElementById('docTypeFilter').value;
+    const params=new URLSearchParams({page,limit:10});
+    if(search) params.append('search',search);
+    if(type) params.append('documentType',type);
+    try {
+      const data=await API.get('/admin/documents?'+params);
+      document.getElementById('adminDocsList').innerHTML = data.documents.map(doc=>`
+        <div class="doc-admin-row">
+          <span style="font-size:22px;">${Format.fileIcon(doc.originalName)}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${doc.originalName}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${doc.projectName} · ${doc.departmentName} · by ${doc.uploadedByName||'—'}</div>
+          </div>
+          <span class="doc-id-tag">${doc.documentId}</span>
+          <span class="badge" style="background:${Format.docTypeColor(doc.documentType)}22;color:${Format.docTypeColor(doc.documentType)};font-size:10px;">${doc.documentType}</span>
+          <span style="font-size:12px;color:var(--text-muted);">${Format.fileSize(doc.fileSize)}</span>
+          <span style="font-size:12px;color:var(--text-muted);">${Format.date(doc.createdAt)}</span>
+          <button onclick="hardDeleteDoc('${doc._id}',this)" class="btn btn-danger btn-sm">🗑️</button>
+        </div>`).join('') || '<div style="color:var(--text-muted);">No documents found</div>';
+    } catch(e){ Toast.error(e.message); }
+  }
+
+  async function updateRole(userId, newRole) {
+    try {
+      await API.put(`/admin/users/${userId}/role`,{role:newRole});
+      Toast.success('Role updated to '+newRole);
+    } catch(e){Toast.error(e.message);}
+  }
+
+  async function toggleUser(userId, btn) {
+    try {
+      const data=await API.put(`/admin/users/${userId}/toggle-active`,{});
+      btn.textContent = data.isActive?'🚫 Deactivate':'✅ Activate';
+      btn.className = `btn btn-sm ${data.isActive?'btn-secondary':'btn-success'}`;
+      Toast.success(data.isActive?'User activated':'User deactivated');
+    } catch(e){Toast.error(e.message);}
+  }
+
+  async function hardDeleteDoc(id, btn) {
+    if(!confirm('PERMANENTLY delete this document? This cannot be undone.')) return;
+    try {
+      await API.delete(`/admin/documents/${id}`);
+      btn.closest('.doc-admin-row').remove();
+      Toast.success('Document permanently deleted');
+    } catch(e){Toast.error(e.message);}
+  }
+
+  function switchAdminTab(name, el) {
+    document.querySelectorAll('.a-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.a-panel').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-'+name).classList.add('active');
+    if(name==='documents') loadAdminDocs();
+    if(name==='analytics'||name==='recent') loadAdminStats();
+  }
+
+  // Debounce helper
+  function debounce(fn,delay){let t;return function(){clearTimeout(t);t=setTimeout(fn,delay);};}
+
+  initAdmin();
+</script>
+</body>
+</html>
