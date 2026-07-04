@@ -47,7 +47,11 @@ app.use(cors({
       'http://localhost:5173'
     ].filter(Boolean);
 
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.azurewebsites.net')
+    ) {
       return callback(null, true);
     }
 
