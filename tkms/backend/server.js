@@ -10,8 +10,10 @@ const path = require('path');
 const app = express();
 
 // Security Middleware
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
