@@ -3,16 +3,6 @@ const jwt = require("jsonwebtoken");
 const { connectAzureSQL, sql } = require("../config/azureSql");
 const { sendApprovalRequestEmail } = require("../services/azureEmail.service");
 
-function isAllowedCompanyEmail(email) {
-    const allowedDomains = (process.env.ALLOWED_EMAIL_DOMAINS || "")
-        .split(",")
-        .map(domain => domain.trim().toLowerCase());
-
-    const emailDomain = email.split("@")[1]?.toLowerCase();
-
-    return allowedDomains.includes(emailDomain);
-}
-
 function normalizeRole(role) {
     const roleMap = {
         "super admin": "SUPER_ADMIN",
@@ -35,13 +25,6 @@ async function requestAccount(req, res) {
             return res.status(400).json({
                 success: false,
                 message: "Full name, email, password, organization and role are required"
-            });
-        }
-
-        if (!isAllowedCompanyEmail(email)) {
-            return res.status(403).json({
-                success: false,
-                message: "Only approved company email addresses are allowed"
             });
         }
 
