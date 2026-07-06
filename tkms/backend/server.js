@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
@@ -70,12 +71,38 @@ app.use(morgan('dev'));
 // Static Files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Basic Test Routes
-const frontendPath = path.join(__dirname, 'frontend');
+// Frontend Static Files - Azure safe
+const possibleFrontendPaths = [
+  path.join(__dirname, 'frontend'),
+  path.join(process.cwd(), 'frontend'),
+  path.join(process.cwd(), 'tkms', 'backend', 'frontend')
+];
+
+const frontendPath = possibleFrontendPaths.find(p =>
+  fs.existsSync(path.join(p, 'index.html'))
+) || path.join(__dirname, 'frontend');
+
+console.log('Frontend path:', frontendPath);
+
 app.use(express.static(frontendPath));
+app.use('/pages', express.static(path.join(frontendPath, 'pages')));
+app.use('/css', express.static(path.join(frontendPath, 'css')));
+app.use('/js', express.static(path.join(frontendPath, 'js')));
+app.use('/assets', express.static(path.join(frontendPath, 'assets')));
+
+// Also support old wrong URL
+app.use('/tkms/frontend', express.static(frontendPath));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
+app.get('/pages/login.html', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'pages', 'login.html'));
+});
+
+app.get('/tkms/frontend/pages/login.html', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'pages', 'login.html'));
 });
 
 app.get('/api', (req, res) => {
