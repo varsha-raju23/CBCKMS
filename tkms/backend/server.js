@@ -160,6 +160,11 @@ app.get('/api/sql-health', async (req, res) => {
   }
 });
 
+
+app.use('/api/ai', require('./routes/ai'));
+app.use('/api/assistant', require('./routes/ai'));
+app.use('/api/ai-assistant', require('./routes/ai'));
+
 // Health Check
 app.get('/api/health', (req, res) => {
   res.json({
@@ -205,4 +210,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`TunnelKMS Server running on port ${PORT}`);
 });
+
 
