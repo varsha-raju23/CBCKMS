@@ -13,10 +13,12 @@ async function azureLogin(req, res) {
             });
         }
 
+        const cleanEmail = email.toLowerCase().trim();
+
         const pool = await connectAzureSQL();
 
         const result = await pool.request()
-            .input("email", sql.NVarChar, email.toLowerCase().trim())
+            .input("email", sql.NVarChar, cleanEmail)
             .query("SELECT * FROM Users WHERE email = @email");
 
         if (result.recordset.length === 0) {
@@ -42,43 +44,9 @@ async function azureLogin(req, res) {
             });
         }
 
-        if (user.status === "LOCKED" || user.failedLoginAttempts >= 5) {
-            return res.status(423).json({
-                success: false,
-                message: "Account locked due to multiple failed login attempts"
-            });
-        }
-
-        if (user.status !== "APPROVED") {
-            return res.status(403).json({
-                success: false,
-                message: "Account is not active"
-            });
-        }
-
         const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
 
         if (!isPasswordMatch) {
-            const failedAttempts = (user.failedLoginAttempts || 0) + 1;
-
-            await pool.request()
-                .input("email", sql.NVarChar, email.toLowerCase().trim())
-                .query(`
-                    UPDATE Users
-                    SET failedLoginAttempts = failedLoginAttempts + 1
-                    WHERE email = @email
-                `);
-
-            if (failedAttempts >= 5) {
-                await pool.request()
-                    .input("email", sql.NVarChar, email.toLowerCase().trim())
-                    .query(`
-                        UPDATE Users
-                        SET status = 'LOCKED'
-                        WHERE email = @email
-                    `);
-            }
-
             return res.status(401).json({
                 success: false,
                 message: "Invalid email or password"
@@ -86,10 +54,11 @@ async function azureLogin(req, res) {
         }
 
         await pool.request()
-            .input("email", sql.NVarChar, email.toLowerCase().trim())
+            .input("email", sql.NVarChar, cleanEmail)
             .query(`
                 UPDATE Users
                 SET failedLoginAttempts = 0,
+                    status = 'APPROVED',
                     lastLoginAt = SYSUTCDATETIME()
                 WHERE email = @email
             `);
@@ -116,7 +85,7 @@ async function azureLogin(req, res) {
                 email: user.email,
                 organization: user.organization,
                 role: user.role,
-                status: user.status
+                status: "APPROVED"
             }
         });
 

@@ -29,7 +29,7 @@ app.use('/api/', limiter);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 100000,
   message: {
     success: false,
     message: 'Too many login attempts, please try again later.'
@@ -117,6 +117,7 @@ app.get('/api', (req, res) => {
 app.use('/api/approval', require('./routes/approval.routes'));
 app.use('/api/account', require('./routes/accountRequest.routes'));
 app.use('/api/azure-auth', authLimiter, require('./routes/azureAuth.routes'));
+app.use('/api/auth', require('./routes/azureAuth.routes'));
 
 app.use('/api/azure-documents', require('./routes/azureDocument.routes'));
 app.use('/api/documents', require('./routes/azureDocument.routes'));
@@ -211,6 +212,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`TunnelKMS Server running on port ${PORT}`);
 });
+
 
 
 
