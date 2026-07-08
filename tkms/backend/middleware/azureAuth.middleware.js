@@ -19,7 +19,7 @@ async function protectAzure(req, res, next) {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
 
         const pool = await connectAzureSQL();
 
