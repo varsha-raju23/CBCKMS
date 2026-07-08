@@ -5,7 +5,9 @@ const router = express.Router();
 const {
     uploadAzureDocument,
     getAzureDocuments,
-    downloadAzureDocument
+    getAzureDocumentById,
+    downloadAzureDocument,
+    deleteAzureDocument
 } = require("../controllers/azureDocument.controller");
 
 const {
@@ -47,21 +49,21 @@ const upload = multer({
 router.get(
     "/",
     protectAzure,
-    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER"),
+    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER", "VIEWER"),
     getAzureDocuments
 );
 
 router.get(
     "/recent",
     protectAzure,
-    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER"),
+    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER", "VIEWER"),
     getAzureDocuments
 );
 
 router.get(
     "/stats",
     protectAzure,
-    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER"),
+    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER", "VIEWER"),
     async (req, res) => {
         res.json({
             success: true,
@@ -77,9 +79,16 @@ router.get(
 );
 
 router.get(
+    "/:id",
+    protectAzure,
+    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER", "VIEWER"),
+    getAzureDocumentById
+);
+
+router.get(
     "/:id/download",
     protectAzure,
-    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER"),
+    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER", "VIEWER"),
     azureAuditLogger("AZURE_DOCUMENT_DOWNLOADED"),
     downloadAzureDocument
 );
@@ -91,6 +100,14 @@ router.post(
     azureAuditLogger("AZURE_DOCUMENT_UPLOADED"),
     upload.single("file"),
     uploadAzureDocument
+);
+
+router.delete(
+    "/:id",
+    protectAzure,
+    allowAzureRoles("SUPER_ADMIN", "ADMIN", "PROJECT_MANAGER", "TUNNEL_ENGINEER"),
+    azureAuditLogger("AZURE_DOCUMENT_DELETED"),
+    deleteAzureDocument
 );
 
 module.exports = router;
