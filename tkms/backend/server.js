@@ -139,6 +139,7 @@ app.use('/api/azure-progress', require('./routes/azureProgress.routes'));
 app.use('/api/azure-monitoring', require('./routes/azureMonitoring.routes'));
 app.use('/api/azure-analytics', require('./routes/azureAnalytics.routes'));
 app.use('/api/azure-admin', require('./routes/azureAdmin.routes'));
+app.use('/api/admin', require('./routes/azureAdmin.routes'));
 
 
 app.get('/api/sql-health', async (req, res) => {
@@ -210,5 +211,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`TunnelKMS Server running on port ${PORT}`);
 });
+
 
 
