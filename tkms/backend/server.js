@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Security Middleware
 app.use(helmet({
@@ -139,6 +140,26 @@ app.use('/api/azure-monitoring', require('./routes/azureMonitoring.routes'));
 app.use('/api/azure-analytics', require('./routes/azureAnalytics.routes'));
 app.use('/api/azure-admin', require('./routes/azureAdmin.routes'));
 
+
+app.get('/api/sql-health', async (req, res) => {
+  try {
+    const { connectAzureSQL } = require('./config/azureSql');
+    const pool = await connectAzureSQL();
+    const result = await pool.request().query('SELECT DB_NAME() AS databaseName, SYSTEM_USER AS loginUser');
+    res.json({
+      success: true,
+      message: 'Azure SQL connected',
+      database: result.recordset[0].databaseName,
+      user: result.recordset[0].loginUser
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
   res.json({
@@ -184,3 +205,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`TunnelKMS Server running on port ${PORT}`);
 });
+
