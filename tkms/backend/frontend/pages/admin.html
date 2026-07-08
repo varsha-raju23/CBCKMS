@@ -139,7 +139,7 @@
   async function initAdmin() {
     await Nav.build('admin');
     const user = Auth.getUser();
-    if (user?.role !== 'admin') {
+    if (!['SUPER_ADMIN','ADMIN','admin'].includes(user?.role)) {
       Toast.error('Admin access required');
       setTimeout(() => window.location.href='dashboard.html', 1500);
       return;
@@ -344,3 +344,4 @@
 </script>
 </body>
 </html>
+
