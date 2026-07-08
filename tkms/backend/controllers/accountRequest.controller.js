@@ -14,20 +14,22 @@ function normalizeRole(role) {
         "viewer": "VIEWER"
     };
 
-    return roleMap[String(role).toLowerCase()] || role;
+    return roleMap[String(role).toLowerCase().trim()] || String(role).toUpperCase();
 }
 
 async function requestAccount(req, res) {
     try {
-        const { fullName, email, password, organization, role } = req.body;
+        const { fullName, email, password, role } = req.body;
+        const organization = req.body.organization || "CBCKMS";
 
-        if (!fullName || !email || !password || !organization || !role) {
+        if (!fullName || !email || !password || !role) {
             return res.status(400).json({
                 success: false,
-                message: "Full name, email, password, organization and role are required"
+                message: "Full name, email, password and role are required"
             });
         }
 
+        const cleanEmail = email.toLowerCase().trim();
         const finalRole = normalizeRole(role);
 
         const allowedRoles = [
@@ -48,13 +50,22 @@ async function requestAccount(req, res) {
         const pool = await connectAzureSQL();
 
         const existingUser = await pool.request()
-            .input("email", sql.NVarChar, email)
-            .query("SELECT id FROM Users WHERE email = @email");
+            .input("email", sql.NVarChar, cleanEmail)
+            .query("SELECT id, status FROM Users WHERE email = @email");
 
         if (existingUser.recordset.length > 0) {
+            const status = existingUser.recordset[0].status;
+
+            if (status === "PENDING") {
+                return res.status(200).json({
+                    success: true,
+                    message: "Account request already submitted and waiting for admin approval."
+                });
+            }
+
             return res.status(409).json({
                 success: false,
-                message: "Account already exists or request already submitted"
+                message: "Account already exists"
             });
         }
 
@@ -62,7 +73,7 @@ async function requestAccount(req, res) {
 
         const result = await pool.request()
             .input("fullName", sql.NVarChar, fullName)
-            .input("email", sql.NVarChar, email)
+            .input("email", sql.NVarChar, cleanEmail)
             .input("passwordHash", sql.NVarChar, passwordHash)
             .input("organization", sql.NVarChar, organization)
             .input("role", sql.NVarChar, finalRole)
@@ -93,14 +104,14 @@ async function requestAccount(req, res) {
                 userId,
                 purpose: "ACCOUNT_APPROVAL"
             },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || "fallback_secret",
             { expiresIn: "24h" }
         );
 
         try {
             await sendApprovalRequestEmail({
                 fullName,
-                email,
+                email: cleanEmail,
                 organization,
                 role: finalRole,
                 approvalToken
@@ -118,7 +129,7 @@ async function requestAccount(req, res) {
 
         return res.status(500).json({
             success: false,
-            message: "Failed to submit account request"
+            message: error.message || "Failed to submit account request"
         });
     }
 }
