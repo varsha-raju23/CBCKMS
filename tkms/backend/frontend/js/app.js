@@ -30,7 +30,7 @@ const Auth = {
 
   requireAuth: () => {
     if (!localStorage.getItem('tkms_token')) {
-      window.location.href = '/tkms/frontend/pages/login.html';
+      window.location.href = '/pages/login.html';
       return false;
     }
     return true;
@@ -63,7 +63,7 @@ const API = {
 
     if (response.status === 401) {
       Auth.clearSession();
-      window.location.href = '/tkms/frontend/pages/login.html';
+      window.location.href = '/pages/login.html';
       return;
     }
 
