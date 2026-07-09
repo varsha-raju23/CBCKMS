@@ -335,3 +335,51 @@ const Theme = {
 })();
 
 Theme.init();
+
+// ===== GLOBAL THEME + SELECT FIX =====
+(function () {
+  function applyTheme(theme) {
+    const finalTheme = theme === "light" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", finalTheme);
+    localStorage.setItem("tkms_theme", finalTheme);
+  }
+
+  window.setTheme = applyTheme;
+
+  window.toggleTheme = function () {
+    const current = localStorage.getItem("tkms_theme") || document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(current === "dark" ? "light" : "dark");
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    applyTheme(localStorage.getItem("tkms_theme") || "dark");
+
+    document.addEventListener("click", function (e) {
+      const btn = e.target.closest("button, .theme-toggle, [data-theme-toggle]");
+      if (!btn) return;
+
+      const text = (btn.textContent || "").toLowerCase();
+      const id = (btn.id || "").toLowerCase();
+
+      if (
+        id.includes("theme") ||
+        text.includes("light mode") ||
+        text.includes("dark mode") ||
+        text.includes("?") ||
+        text.includes("??")
+      ) {
+        e.preventDefault();
+        window.toggleTheme();
+      }
+    });
+
+    document.querySelectorAll("select").forEach(function (select) {
+      select.style.pointerEvents = "auto";
+      select.style.userSelect = "auto";
+      select.style.webkitAppearance = "menulist";
+      select.style.appearance = "auto";
+    });
+  });
+})();
+// ===== END GLOBAL THEME + SELECT FIX =====
+

@@ -1639,3 +1639,70 @@ a:hover {
 .auth-divider::after {
   background: rgba(96, 165, 250, 0.28) !important;
 }
+/* ===== SELECT + LIGHT THEME FIX ===== */
+select,
+select option {
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+select {
+  appearance: auto !important;
+  -webkit-appearance: menulist !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 20 !important;
+}
+
+select option {
+  background: #0f1e33 !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+}
+
+html[data-theme="light"] {
+  --bg-primary: #f4f7fb;
+  --bg-secondary: #e8eef7;
+  --bg-card: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border: #d6dee9;
+  --border-light: #c5d0df;
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] .app,
+html[data-theme="light"] .main-content {
+  background: #f4f7fb !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .upload-card,
+html[data-theme="light"] .modal,
+html[data-theme="light"] .profile-card,
+html[data-theme="light"] .doc-card,
+html[data-theme="light"] .navbar,
+html[data-theme="light"] .footer {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #d6dee9 !important;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #c5d0df !important;
+}
+
+html[data-theme="light"] select option {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+/* ===== END SELECT + LIGHT THEME FIX ===== */
+
