@@ -116,6 +116,7 @@ app.get('/api', (req, res) => {
 // Azure Migration Routes
 app.use('/api/approval', require('./routes/approval.routes'));
 app.use('/api/account', require('./routes/accountRequest.routes'));
+app.use('/api/users', require('./routes/users.routes'));
 app.use('/api/azure-auth', authLimiter, require('./routes/azureAuth.routes'));
 app.use('/api/auth', require('./routes/azureAuth.routes'));
 
@@ -212,6 +213,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`TunnelKMS Server running on port ${PORT}`);
 });
+
 
 
 
