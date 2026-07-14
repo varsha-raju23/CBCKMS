@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
+<meta charset="UTF-8">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login — TunnelKMS</title>
+  <title>Login â€” TunnelKMS</title>
   <link rel="stylesheet" href="../css/style.css" />
 
   <style>
@@ -166,22 +167,22 @@
 
         <div class="hero-features">
           <div class="hero-feat">
-            <div class="feat-icon">📁</div>
+            <div class="feat-icon">ðŸ“</div>
             <span>Secure document management for all tunnel data</span>
           </div>
 
           <div class="hero-feat">
-            <div class="feat-icon">🤖</div>
+            <div class="feat-icon">ðŸ¤–</div>
             <span>AI assistant powered by Google Gemini</span>
           </div>
 
           <div class="hero-feat">
-            <div class="feat-icon">👥</div>
+            <div class="feat-icon">ðŸ‘¥</div>
             <span>Role-based access for teams</span>
           </div>
 
           <div class="hero-feat">
-            <div class="feat-icon">📊</div>
+            <div class="feat-icon">ðŸ“Š</div>
             <span>Real-time analytics & reporting</span>
           </div>
         </div>
@@ -204,7 +205,7 @@
           <div class="input-group">
             <label>Email Address <span class="req">*</span></label>
             <div class="input-icon">
-              <span class="icon">📧</span>
+              <span class="icon">ðŸ“§</span>
               <input type="email" id="email" placeholder="engineer@company.com" required autocomplete="email" />
             </div>
           </div>
@@ -212,10 +213,10 @@
           <div class="input-group">
             <label>Password <span class="req">*</span></label>
             <div class="input-icon" style="position: relative;">
-              <span class="icon">🔒</span>
+              <span class="icon">ðŸ”’</span>
               <input type="password" id="password" placeholder="Enter your password" required
                 autocomplete="current-password" style="padding-right: 44px;" />
-              <button type="button" class="password-toggle" id="togglePwd">👁️</button>
+              <button type="button" class="password-toggle" id="togglePwd">ðŸ‘ï¸</button>
             </div>
           </div>
 
@@ -232,7 +233,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">
-            Sign In →
+            Sign In â†’
           </button>
         </form>
 
@@ -249,7 +250,7 @@
 
         <div style="text-align: center; margin-top: 24px;">
           <button onclick="Theme.toggle(); updateThemeBtn()" id="themeBtn" class="btn btn-ghost btn-sm">
-            🌙 Dark Mode
+            ðŸŒ™ Dark Mode
           </button>
         </div>
       </div>
@@ -265,7 +266,7 @@
 
     function updateThemeBtn() {
       const btn = document.getElementById("themeBtn");
-      btn.textContent = Theme.get() === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+      btn.textContent = Theme.get() === "dark" ? "â˜€ï¸ Light Mode" : "ðŸŒ™ Dark Mode";
     }
 
     updateThemeBtn();
@@ -275,7 +276,7 @@
       const isText = input.type === "text";
 
       input.type = isText ? "password" : "text";
-      this.textContent = isText ? "👁️" : "🙈";
+      this.textContent = isText ? "ðŸ‘ï¸" : "ðŸ™ˆ";
     });
 
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
@@ -310,7 +311,7 @@
         errEl.textContent = err.message || "Login failed";
         errEl.classList.add("show");
 
-        btn.innerHTML = "Sign In →";
+        btn.innerHTML = "Sign In â†’";
         btn.disabled = false;
       }
     });

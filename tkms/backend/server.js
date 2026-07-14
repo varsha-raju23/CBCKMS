@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
@@ -85,7 +85,13 @@ const frontendPath = possibleFrontendPaths.find(p =>
 
 console.log('Frontend path:', frontendPath);
 
-app.use(express.static(frontendPath));
+app.use(express.static(frontendPath, {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".html")) res.setHeader("Content-Type", "text/html; charset=UTF-8");
+    if (filePath.endsWith(".js")) res.setHeader("Content-Type", "application/javascript; charset=UTF-8");
+    if (filePath.endsWith(".css")) res.setHeader("Content-Type", "text/css; charset=UTF-8");
+  }
+}));
 app.use('/pages', express.static(path.join(frontendPath, 'pages')));
 app.use('/css', express.static(path.join(frontendPath, 'css')));
 app.use('/js', express.static(path.join(frontendPath, 'js')));
@@ -213,6 +219,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`TunnelKMS Server running on port ${PORT}`);
 });
+
 
 
 
