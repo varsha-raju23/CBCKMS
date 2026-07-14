@@ -1,0 +1,77 @@
+﻿/* Professional UI final cleanup */
+
+body {
+  font-family: Inter, "Segoe UI", Arial, sans-serif !important;
+}
+
+.nav-link {
+  text-decoration: none !important;
+  font-weight: 700 !important;
+}
+
+button,
+.btn,
+.nav-link {
+  border-radius: 10px !important;
+}
+
+button:empty::before {
+  content: "Action";
+  font-size: 12px;
+}
+
+select,
+select[size],
+select:not([multiple]) {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  overflow: hidden !important;
+  display: block !important;
+  appearance: auto !important;
+  -webkit-appearance: menulist !important;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font-family: Inter, "Segoe UI", Arial, sans-serif !important;
+}
+
+.card,
+.stat-card,
+.doc-card,
+.upload-card,
+.profile-card {
+  border-radius: 16px !important;
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] .main-content,
+html[data-theme="light"] .dashboard,
+html[data-theme="light"] .documents-page {
+  background: #f4f7fb !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .doc-card,
+html[data-theme="light"] .upload-card,
+html[data-theme="light"] .profile-card,
+html[data-theme="light"] .navbar,
+html[data-theme="light"] footer {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #d6dee9 !important;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
