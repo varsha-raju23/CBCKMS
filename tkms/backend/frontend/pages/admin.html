@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel — TunnelKMS</title>
+  <title>Admin Panel â€” TunnelKMS</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
     .admin-banner { background:linear-gradient(135deg,#1a0505,#2d0a0a);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:14px; }
@@ -47,7 +47,7 @@
   <div class="main-content">
 
     <div class="admin-banner">
-      <div class="icon">🛡️</div>
+      <div class="icon">ðŸ›¡ï¸</div>
       <div>
         <h2>Admin Control Panel</h2>
         <p>Manage users, documents, and monitor system analytics</p>
@@ -56,26 +56,26 @@
 
     <!-- Stats -->
     <div class="stats-grid" id="adminStats" style="margin-bottom:24px;">
-      <div class="stat-card"><div class="stat-icon">📁</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Total Documents</div></div>
-      <div class="stat-card"><div class="stat-icon">👥</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Total Users</div></div>
-      <div class="stat-card"><div class="stat-icon">⚙️</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Engineers</div></div>
-      <div class="stat-card"><div class="stat-icon">📋</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Managers</div></div>
-      <div class="stat-card"><div class="stat-icon">👁️</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Viewers</div></div>
-      <div class="stat-card"><div class="stat-icon">🛡️</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Admins</div></div>
+      <div class="stat-card"><div class="stat-icon">ðŸ“</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Total Documents</div></div>
+      <div class="stat-card"><div class="stat-icon">ðŸ‘¥</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Total Users</div></div>
+      <div class="stat-card"><div class="stat-icon">âš™ï¸</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Engineers</div></div>
+      <div class="stat-card"><div class="stat-icon">ðŸ“‹</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Managers</div></div>
+      <div class="stat-card"><div class="stat-icon">ðŸ‘ï¸</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Viewers</div></div>
+      <div class="stat-card"><div class="stat-icon">ðŸ›¡ï¸</div><div class="skeleton" style="height:40px;width:60px;"></div><div class="stat-label">Admins</div></div>
     </div>
 
     <!-- Tabs -->
     <div class="admin-tabs">
-      <div class="a-tab active" onclick="switchAdminTab('users',this)">👥 Users</div>
-      <div class="a-tab" onclick="switchAdminTab('documents',this)">📁 Documents</div>
-      <div class="a-tab" onclick="switchAdminTab('analytics',this)">📊 Analytics</div>
-      <div class="a-tab" onclick="switchAdminTab('recent',this)">🕐 Recent Activity</div>
+      <div class="a-tab active" onclick="switchAdminTab('users',this)">ðŸ‘¥ Users</div>
+      <div class="a-tab" onclick="switchAdminTab('documents',this)">ðŸ“ Documents</div>
+      <div class="a-tab" onclick="switchAdminTab('analytics',this)">ðŸ“Š Analytics</div>
+      <div class="a-tab" onclick="switchAdminTab('recent',this)">ðŸ• Recent Activity</div>
     </div>
 
     <!-- Users Panel -->
     <div class="a-panel active card" id="panel-users">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h3>👥 User Management</h3>
+        <h3>ðŸ‘¥ User Management</h3>
         <div class="admin-filters">
           <input type="text" id="userSearch" placeholder="Search name or email..." oninput="debounce(loadUsers,400)()">
           <select id="userRoleFilter" onchange="loadUsers()">
@@ -92,7 +92,7 @@
     <!-- Documents Panel -->
     <div class="a-panel card" id="panel-documents">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h3>📁 Document Management</h3>
+        <h3>ðŸ“ Document Management</h3>
         <div class="admin-filters">
           <input type="text" id="docSearch" placeholder="Search documents..." oninput="debounce(loadAdminDocs,400)()">
           <select id="docTypeFilter" onchange="loadAdminDocs()">
@@ -109,7 +109,7 @@
 
     <!-- Analytics Panel -->
     <div class="a-panel card" id="panel-analytics">
-      <h3 style="margin-bottom:20px;">📊 System Analytics</h3>
+      <h3 style="margin-bottom:20px;">ðŸ“Š System Analytics</h3>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="analyticsContent">
         <div style="color:var(--text-muted);">Loading analytics...</div>
       </div>
@@ -117,7 +117,7 @@
 
     <!-- Recent Activity Panel -->
     <div class="a-panel card" id="panel-recent">
-      <h3 style="margin-bottom:20px;">🕐 Recent Activity</h3>
+      <h3 style="margin-bottom:20px;">ðŸ• Recent Activity</h3>
       <div id="recentActivity"><div style="color:var(--text-muted);">Loading...</div></div>
     </div>
 
@@ -125,8 +125,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-brand">🚇 TunnelKMS Admin</div>
-      <div class="footer-copy">© 2025 TunnelKMS</div>
+      <div class="footer-brand">ðŸš‡ TunnelKMS Admin</div>
+      <div class="footer-copy">Â© 2025 TunnelKMS</div>
     </div>
   </footer>
 </div>
@@ -153,12 +153,12 @@
       const data = await API.get('/admin/stats');
       const s = data.stats;
       document.getElementById('adminStats').innerHTML = `
-        <div class="stat-card"><div class="stat-icon">📁</div><div class="stat-value">${s.totalDocs}</div><div class="stat-label">Total Documents</div></div>
-        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">${s.totalUsers}</div><div class="stat-label">Total Users</div></div>
-        <div class="stat-card"><div class="stat-icon">⚙️</div><div class="stat-value">${s.totalEngineers}</div><div class="stat-label">Engineers</div></div>
-        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${s.totalManagers}</div><div class="stat-label">Managers</div></div>
-        <div class="stat-card"><div class="stat-icon">👁️</div><div class="stat-value">${s.totalViewers}</div><div class="stat-label">Viewers</div></div>
-        <div class="stat-card"><div class="stat-icon">🛡️</div><div class="stat-value">${s.totalAdmins}</div><div class="stat-label">Admins</div></div>
+        <div class="stat-card"><div class="stat-icon">ðŸ“</div><div class="stat-value">${s.totalDocs}</div><div class="stat-label">Total Documents</div></div>
+        <div class="stat-card"><div class="stat-icon">ðŸ‘¥</div><div class="stat-value">${s.totalUsers}</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-card"><div class="stat-icon">âš™ï¸</div><div class="stat-value">${s.totalEngineers}</div><div class="stat-label">Engineers</div></div>
+        <div class="stat-card"><div class="stat-icon">ðŸ“‹</div><div class="stat-value">${s.totalManagers}</div><div class="stat-label">Managers</div></div>
+        <div class="stat-card"><div class="stat-icon">ðŸ‘ï¸</div><div class="stat-value">${s.totalViewers}</div><div class="stat-label">Viewers</div></div>
+        <div class="stat-card"><div class="stat-icon">ðŸ›¡ï¸</div><div class="stat-value">${s.totalAdmins}</div><div class="stat-label">Admins</div></div>
       `;
 
       // Analytics content
@@ -169,7 +169,7 @@
 
       document.getElementById('analyticsContent').innerHTML = `
         <div>
-          <h4 style="margin-bottom:14px;font-size:15px;">📄 Documents by Type</h4>
+          <h4 style="margin-bottom:14px;font-size:15px;">ðŸ“„ Documents by Type</h4>
           ${byType.map(t=>`
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;">
               <div style="width:140px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t._id}</div>
@@ -180,7 +180,7 @@
             </div>`).join('')}
         </div>
         <div>
-          <h4 style="margin-bottom:14px;font-size:15px;">🏢 Documents by Department</h4>
+          <h4 style="margin-bottom:14px;font-size:15px;">ðŸ¢ Documents by Department</h4>
           ${byDept.map(t=>`
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;">
               <div style="width:140px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t._id}</div>
@@ -191,7 +191,7 @@
             </div>`).join('')}
         </div>
         <div>
-          <h4 style="margin-bottom:14px;font-size:15px;">🏆 Most Viewed Documents</h4>
+          <h4 style="margin-bottom:14px;font-size:15px;">ðŸ† Most Viewed Documents</h4>
           ${(s.mostViewed||[]).map((d,i)=>`
             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-secondary);border-radius:8px;margin-bottom:8px;font-size:13px;">
               <span style="color:var(--amber);font-weight:700;width:18px;">${i+1}.</span>
@@ -199,18 +199,18 @@
                 <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.originalName}</div>
                 <div style="color:var(--text-muted);font-size:11px;">${d.projectName}</div>
               </div>
-              <span style="color:var(--amber);font-weight:700;">👁️ ${d.viewCount}</span>
+              <span style="color:var(--amber);font-weight:700;">ðŸ‘ï¸ ${d.viewCount}</span>
             </div>`).join('')}
         </div>
         <div>
-          <h4 style="margin-bottom:14px;font-size:15px;">👤 Recent Users</h4>
+          <h4 style="margin-bottom:14px;font-size:15px;">ðŸ‘¤ Recent Users</h4>
           ${(s.recentUsers||[]).map(u=>`
             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-secondary);border-radius:8px;margin-bottom:8px;font-size:13px;">
               <div style="width:32px;height:32px;border-radius:50%;background:var(--grad-amber);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0f1e;font-size:12px;flex-shrink:0;">
                 ${(u.profile?.fullName||u.email).charAt(0).toUpperCase()}
               </div>
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;">${u.profile?.fullName||'—'}</div>
+                <div style="font-weight:600;">${u.profile?.fullName||'â€”'}</div>
                 <div style="color:var(--text-muted);font-size:11px;">${u.email}</div>
               </div>
               <span class="badge" style="background:${Format.roleColor(u.role)}22;color:${Format.roleColor(u.role)};font-size:10px;">${u.role}</span>
@@ -221,13 +221,13 @@
       // Recent activity
       document.getElementById('recentActivity').innerHTML = `
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <h4 style="font-size:15px;margin-bottom:8px;">📤 Recent Uploads</h4>
+          <h4 style="font-size:15px;margin-bottom:8px;">ðŸ“¤ Recent Uploads</h4>
           ${(s.recentDocs||[]).map(d=>`
             <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-secondary);border-radius:8px;font-size:13px;">
               <span>${Format.fileIcon(d.originalName)}</span>
               <div style="flex:1;min-width:0;">
                 <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.originalName}</div>
-                <div style="color:var(--text-muted);font-size:11px;">by ${d.uploadedByName||'—'} · ${d.projectName} · <span style="color:${Format.docTypeColor(d.documentType)};">${d.documentType}</span></div>
+                <div style="color:var(--text-muted);font-size:11px;">by ${d.uploadedByName||'â€”'} Â· ${d.projectName} Â· <span style="color:${Format.docTypeColor(d.documentType)};">${d.documentType}</span></div>
               </div>
               <div style="color:var(--text-muted);font-size:11px;white-space:nowrap;">${Format.timeAgo(d.createdAt)}</div>
             </div>`).join('')}
@@ -256,16 +256,16 @@
           </div>
           <div class="u-info">
             <div class="u-name">${u.profile?.fullName||'Profile not set'} ${!u.isVerified?'<span style="color:var(--warning);font-size:11px;">(unverified)</span>':''}</div>
-            <div class="u-email">${u.email} · ${u.profile?.department||'—'} · ${u.profile?.companyName||'—'}</div>
+            <div class="u-email">${u.email} Â· ${u.profile?.department||'â€”'} Â· ${u.profile?.companyName||'â€”'}</div>
           </div>
           <div class="u-actions">
             <select class="role-select" onchange="updateRole('${u._id}',this.value)" title="Change role">
-              <option value="admin" ${u.role==='admin'?'selected':''}>🛡️ Admin</option>
-              <option value="manager" ${u.role==='manager'?'selected':''}>📋 Manager</option>
-              <option value="engineer" ${u.role==='engineer'?'selected':''}>⚙️ Engineer</option>
-              <option value="viewer" ${u.role==='viewer'?'selected':''}>👁️ Viewer</option>
+              <option value="admin" ${u.role==='admin'?'selected':''}>ðŸ›¡ï¸ Admin</option>
+              <option value="manager" ${u.role==='manager'?'selected':''}>ðŸ“‹ Manager</option>
+              <option value="engineer" ${u.role==='engineer'?'selected':''}>âš™ï¸ Engineer</option>
+              <option value="viewer" ${u.role==='viewer'?'selected':''}>ðŸ‘ï¸ Viewer</option>
             </select>
-            <button onclick="toggleUser('${u._id}',this)" class="btn btn-sm ${u.isActive?'btn-secondary':'btn-success'}">${u.isActive?'🚫 Deactivate':'✅ Activate'}</button>
+            <button onclick="toggleUser('${u._id}',this)" class="btn btn-sm ${u.isActive?'btn-secondary':'btn-success'}">${u.isActive?'ðŸš« Deactivate':'âœ… Activate'}</button>
           </div>
         </div>`).join('') || '<div style="color:var(--text-muted);">No users found</div>';
 
@@ -292,13 +292,13 @@
           <span style="font-size:22px;">${Format.fileIcon(doc.originalName)}</span>
           <div style="flex:1;min-width:0;">
             <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${doc.originalName}</div>
-            <div style="font-size:11px;color:var(--text-muted);">${doc.projectName} · ${doc.departmentName} · by ${doc.uploadedByName||'—'}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${doc.projectName} Â· ${doc.departmentName} Â· by ${doc.uploadedByName||'â€”'}</div>
           </div>
           <span class="doc-id-tag">${doc.documentId}</span>
           <span class="badge" style="background:${Format.docTypeColor(doc.documentType)}22;color:${Format.docTypeColor(doc.documentType)};font-size:10px;">${doc.documentType}</span>
           <span style="font-size:12px;color:var(--text-muted);">${Format.fileSize(doc.fileSize)}</span>
           <span style="font-size:12px;color:var(--text-muted);">${Format.date(doc.createdAt)}</span>
-          <button onclick="hardDeleteDoc('${doc._id}',this)" class="btn btn-danger btn-sm">🗑️</button>
+          <button onclick="hardDeleteDoc('${doc._id}',this)" class="btn btn-danger btn-sm">ðŸ—‘ï¸</button>
         </div>`).join('') || '<div style="color:var(--text-muted);">No documents found</div>';
     } catch(e){ Toast.error(e.message); }
   }
@@ -313,7 +313,7 @@
   async function toggleUser(userId, btn) {
     try {
       const data=await API.put(`/admin/users/${userId}/toggle-active`,{});
-      btn.textContent = data.isActive?'🚫 Deactivate':'✅ Activate';
+      btn.textContent = data.isActive?'ðŸš« Deactivate':'âœ… Activate';
       btn.className = `btn btn-sm ${data.isActive?'btn-secondary':'btn-success'}`;
       Toast.success(data.isActive?'User activated':'User deactivated');
     } catch(e){Toast.error(e.message);}
@@ -344,4 +344,5 @@
 </script>
 </body>
 </html>
+
 

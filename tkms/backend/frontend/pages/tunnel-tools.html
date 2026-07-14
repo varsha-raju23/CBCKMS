@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunnel Intelligence Tools - TunnelKMS</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tools-page {
+            padding: 28px;
+            min-height: 100vh;
+            background: var(--bg-primary, #071426);
+            color: var(--text-primary, #ffffff);
+        }
+
+        .tools-hero {
+            background: linear-gradient(135deg, #0f3b82, #2563eb);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        .tools-hero h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .tools-hero p {
+            margin-top: 8px;
+            color: #dbeafe;
+        }
+
+        .tool-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .tool-tab {
+            border: 1px solid rgba(148,163,184,0.35);
+            background: var(--bg-card, #0f1e33);
+            color: var(--text-primary, #fff);
+            padding: 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .tool-tab.active,
+        .tool-tab:hover {
+            background: linear-gradient(135deg, #0f3b82, #2563eb);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tool-panel {
+            display: none;
+        }
+
+        .tool-panel.active {
+            display: block;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .tool-card {
+            background: var(--bg-card, #0f1e33);
+            border: 1px solid rgba(148,163,184,0.3);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+        }
+
+        .tool-card h2 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 700;
+            color: var(--text-secondary, #b8d7ff);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            height: 46px;
+            border-radius: 10px;
+            border: 1px solid rgba(148,163,184,0.45);
+            background: var(--bg-secondary, #081a2f);
+            color: var(--text-primary, #fff);
+            padding: 10px 12px;
+            outline: none;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .primary-btn {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .result-box {
+            min-height: 220px;
+            border-radius: 16px;
+            border: 1px dashed rgba(148,163,184,0.45);
+            background: rgba(37,99,235,0.08);
+            padding: 22px;
+            line-height: 1.7;
+        }
+
+        .result-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(37,99,235,0.16);
+            border: 1px solid rgba(37,99,235,0.35);
+            margin: 4px;
+            font-weight: 700;
+        }
+
+        .theme-toggle-fixed {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 9999;
+            border: none;
+            border-radius: 999px;
+            padding: 12px 18px;
+            background: #2563eb;
+            color: white;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        html[data-theme="light"] .tools-page {
+            background: #f4f7fb;
+            color: #0f172a;
+        }
+
+        html[data-theme="light"] .tool-card,
+        html[data-theme="light"] .tool-tab {
+            background: #ffffff;
+            color: #0f172a;
+            border-color: #d6dee9;
+        }
+
+        html[data-theme="light"] input,
+        html[data-theme="light"] select,
+        html[data-theme="light"] textarea {
+            background: #ffffff;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        @media (max-width: 900px) {
+            .tool-grid,
+            .tool-tabs,
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tools-page">
+        <div class="tools-hero">
+            <h1>🚇 Tunnel Intelligence Tools</h1>
+            <p>Professional support recommendation, cycle time estimation, and lessons-learned search for tunnel projects.</p>
+        </div>
+
+        <div class="tool-tabs">
+            <button class="tool-tab active" data-tab="support">🏗 Support System</button>
+            <button class="tool-tab" data-tab="cycle">⏱ Cycle Time</button>
+            <button class="tool-tab" data-tab="problem">🔎 Problem Solver</button>
+        </div>
+
+        <section id="support" class="tool-panel active">
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h2>Site & Rock Parameters</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rock Type</label>
+                            <select id="rockType">
+                                <option value="">Select Rock Type</option>
+                                <option value="hard">Hard Rock</option>
+                                <option value="medium">Medium Rock</option>
+                                <option value="weak">Weak Rock</option>
+                                <option value="soil">Soft Ground / Soil</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>UCS (MPa)</label>
+                            <input type="number" id="ucs" placeholder="e.g. 65">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>RQD (%)</label>
+                            <input type="number" id="rqd" placeholder="e.g. 70">
+                        </div>
+
+                        <div class="form-group">
+                            <label>RMR Value</label>
+                            <input type="number" id="rmr" placeholder="0-100">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Excavation Method</label>
+                        <select id="method">
+                            <option value="">Select Method</option>
+                            <option value="drill">Drill & Blast</option>
+                            <option value="tbm">TBM</option>
+                            <option value="natm">NATM</option>
+                            <option value="cutcover">Cut and Cover</option>
+                        </select>
+                    </div>
+
+                    <button class="primary-btn" onclick="getSupport()">Get Support Recommendation</button>
+                </div>
+
+                <div class="tool-card">
+                    <h2>Recommendation Output</h2>
+                    <div id="supportResult" class="result-box">
+                        <div class="result-title">🏗 Support recommendations will appear here</div>
+                        Fill rock parameters and click the button.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cycle" class="tool-panel">
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h2>Excavation Parameters</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>RMR Value</label>
+                            <input type="number" id="cycleRmr" placeholder="0-100">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tunnel Length (m)</label>
+                            <input type="number" id="length" placeholder="e.g. 500">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Round Length (m)</label>
+                            <input type="number" id="roundLength" placeholder="e.g. 1.5">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Excavation Method</label>
+                            <select id="cycleMethod">
+                                <option value="drill">Drill & Blast</option>
+                                <option value="tbm">TBM</option>
+                                <option value="natm">NATM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="primary-btn" onclick="predictCycle()">Predict Cycle Time</button>
+                </div>
+
+                <div class="tool-card">
+                    <h2>Cycle Time Prediction</h2>
+                    <div id="cycleResult" class="result-box">
+                        <div class="result-title">⏱ Prediction will appear here</div>
+                        Enter excavation values and calculate.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="problem" class="tool-panel">
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h2>Lessons Learned Search</h2>
+
+                    <div class="form-group">
+                        <label>Describe Problem / Keywords</label>
+                        <textarea id="problemText" placeholder="e.g. water ingress, crown instability, shotcrete falling, overbreak, settlement"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rock Class</label>
+                            <select id="problemRock">
+                                <option value="">All Rock Classes</option>
+                                <option>Very Poor</option>
+                                <option>Poor</option>
+                                <option>Fair</option>
+                                <option>Good</option>
+                                <option>Very Good</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="problemCategory">
+                                <option value="">All Categories</option>
+                                <option>Safety</option>
+                                <option>Quality</option>
+                                <option>Delay</option>
+                                <option>Geotechnical</option>
+                                <option>Equipment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="primary-btn" onclick="solveProblem()">Search Lessons Learned</button>
+                </div>
+
+                <div class="tool-card">
+                    <h2>Suggested Corrective Actions</h2>
+                    <div id="problemResult" class="result-box">
+                        <div class="result-title">🔎 Results will appear here</div>
+                        Enter problem keywords and search.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <button class="theme-toggle-fixed" onclick="toggleTheme()">🌙 / ☀️ Theme</button>
+
+    <script>
+        function setTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme") || "dark";
+            setTheme(current === "dark" ? "light" : "dark");
+        }
+
+        setTheme(localStorage.getItem("theme") || "dark");
+
+        document.querySelectorAll(".tool-tab").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".tool-tab").forEach(b => b.classList.remove("active"));
+                document.querySelectorAll(".tool-panel").forEach(p => p.classList.remove("active"));
+
+                btn.classList.add("active");
+                document.getElementById(btn.dataset.tab).classList.add("active");
+            });
+        });
+
+        function getSupport() {
+            const rmr = Number(document.getElementById("rmr").value || 0);
+            const rockType = document.getElementById("rockType").value;
+            let className = "Unknown";
+            let support = "";
+
+            if (rmr >= 81) {
+                className = "Very Good Rock";
+                support = "Minimal support. Spot bolting if required. Thin shotcrete layer only in local weak zones.";
+            } else if (rmr >= 61) {
+                className = "Good Rock";
+                support = "Systematic rock bolts 2.5–3 m spacing. Shotcrete 50 mm where required. Regular geological mapping.";
+            } else if (rmr >= 41) {
+                className = "Fair Rock";
+                support = "Rock bolts 1.5–2 m spacing, wire mesh, shotcrete 75–100 mm, close monitoring.";
+            } else if (rmr >= 21) {
+                className = "Poor Rock";
+                support = "Heavy support: rock bolts, steel ribs/lattice girders, shotcrete 100–150 mm, reduced round length.";
+            } else {
+                className = "Very Poor Rock";
+                support = "Immediate support required. Steel ribs, forepoling/spiling, short advances, drainage and continuous monitoring.";
+            }
+
+            document.getElementById("supportResult").innerHTML = `
+                <div class="result-title">Recommended Support</div>
+                <span class="badge">${className}</span>
+                <span class="badge">${rockType || "General Tunnel"}</span>
+                <p><b>Support:</b> ${support}</p>
+                <p><b>Monitoring:</b> Check convergence, crown settlement, seepage, and face stability daily.</p>
+            `;
+        }
+
+        function predictCycle() {
+            const rmr = Number(document.getElementById("cycleRmr").value || 50);
+            const length = Number(document.getElementById("length").value || 100);
+            const round = Number(document.getElementById("roundLength").value || 1.5);
+            const method = document.getElementById("cycleMethod").value;
+
+            let hoursPerRound = 8;
+
+            if (method === "tbm") hoursPerRound = 4;
+            if (method === "natm") hoursPerRound = 10;
+            if (method === "drill") hoursPerRound = 9;
+
+            if (rmr < 40) hoursPerRound += 4;
+            if (rmr > 70) hoursPerRound -= 2;
+
+            const rounds = Math.ceil(length / round);
+            const totalHours = Math.round(rounds * hoursPerRound);
+            const totalDays = Math.ceil(totalHours / 24);
+
+            document.getElementById("cycleResult").innerHTML = `
+                <div class="result-title">Estimated Cycle Time</div>
+                <span class="badge">${rounds} rounds</span>
+                <span class="badge">${totalHours} hours</span>
+                <span class="badge">${totalDays} days</span>
+                <p><b>Method:</b> ${method.toUpperCase()}</p>
+                <p><b>Note:</b> Final cycle time depends on support installation, mucking, ventilation, equipment availability, and geology.</p>
+            `;
+        }
+
+        function solveProblem() {
+            const text = document.getElementById("problemText").value.toLowerCase();
+            let actions = [];
+
+            if (text.includes("water") || text.includes("seepage") || text.includes("ingress")) {
+                actions.push("Provide drainage holes, probe drilling, grouting, waterproofing membrane, and monitor inflow rate.");
+            }
+
+            if (text.includes("shotcrete") || text.includes("falling")) {
+                actions.push("Check surface cleaning, rebound, mix design, accelerator dosage, nozzle angle, and apply mesh reinforcement.");
+            }
+
+            if (text.includes("settlement") || text.includes("crown")) {
+                actions.push("Reduce advance length, increase support stiffness, install canopy tubes/forepoling, and intensify convergence monitoring.");
+            }
+
+            if (text.includes("overbreak")) {
+                actions.push("Review drilling pattern, charge quantity, delay timing, perimeter blasting, and face mapping.");
+            }
+
+            if (actions.length === 0) {
+                actions.push("Perform site inspection, geological face mapping, review method statement, check monitoring records, and escalate to design team.");
+            }
+
+            document.getElementById("problemResult").innerHTML = `
+                <div class="result-title">Lessons Learned / Corrective Actions</div>
+                ${actions.map(a => `<p>✅ ${a}</p>`).join("")}
+                <p><b>Recommended:</b> Attach photos, DPR, inspection checklist, and monitoring data in TunnelKMS Documents.</p>
+            `;
+        }
+    </script>
+</body>
+</html>
