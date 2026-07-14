@@ -8,7 +8,7 @@ const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
 
 const { connectAzureSQL, sql } = require("../config/azureSql");
-const { protectAzure } = require("../middlewares/azureAuth.middleware");
+const { protectAzure } = require("../middleware/azureAuth.middleware");
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
@@ -344,3 +344,4 @@ router.post("/query", protectAzure, handleAIQuestion);
 router.post("/", protectAzure, handleAIQuestion);
 
 module.exports = router;
+
