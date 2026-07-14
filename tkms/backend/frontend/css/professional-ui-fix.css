@@ -75,3 +75,20 @@ html[data-theme="light"] textarea {
   color: #0f172a !important;
   border-color: #cbd5e1 !important;
 }
+/* Dashboard final restore */
+.tkms-stat-value {
+  font-size: 42px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  margin-bottom: 18px !important;
+  color: #ffffff !important;
+}
+
+.tkms-empty-chart {
+  color: #93a9c7 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme="light"] .tkms-stat-value {
+  color: #0f172a !important;
+}
