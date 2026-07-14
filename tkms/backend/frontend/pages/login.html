@@ -1,258 +1,636 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
-<meta charset="UTF-8">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login — TunnelKMS</title>
+  <meta name="description" content="Sign in to TunnelKMS — Cloud-Based Construction Knowledge Management System for Tunnel Projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
 
   <style>
-    .auth-bg {
+    /* ── Page Layout ── */
+    .login-page {
       min-height: 100vh;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      background: var(--bg-primary);
-    }
-
-    .auth-hero {
-      background: linear-gradient(135deg, #0a0f1e 0%, #1a1035 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 40px;
+      background: #060b18;
       position: relative;
       overflow: hidden;
     }
 
-    .auth-hero::before {
-      content: "";
-      position: absolute;
+    /* ── Animated Background ── */
+    .bg-animated {
+      position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+      z-index: 0;
+      pointer-events: none;
     }
 
-    .hero-content {
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    .bg-orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #f59e0b, transparent);
+      top: -100px; left: -100px;
+      animation-delay: 0s;
+    }
+
+    .bg-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #3b82f6, transparent);
+      bottom: -80px; right: 20%;
+      animation-delay: -3s;
+    }
+
+    .bg-orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, #8b5cf6, transparent);
+      top: 40%; left: 40%;
+      animation-delay: -5s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(20px, -30px) scale(1.05); }
+      66%       { transform: translate(-15px, 20px) scale(0.95); }
+    }
+
+    /* ── Dot-grid overlay ── */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(245,158,11,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,158,11,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       LEFT HERO PANEL
+    ──────────────────────────────────────────────────────── */
+    .hero-panel {
       position: relative;
       z-index: 1;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 64px;
+      background: linear-gradient(135deg, rgba(10,15,30,.9) 0%, rgba(15,23,42,.7) 100%);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(245,158,11,.1);
     }
 
-    .hero-logo {
-      font-size: 72px;
-      margin-bottom: 24px;
-      animation: float 4s ease-in-out infinite;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245,158,11,.12);
+      border: 1px solid rgba(245,158,11,.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #f59e0b;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
     }
 
-    @keyframes float {
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #f59e0b;
+      animation: pulseDot 2s ease-in-out infinite;
+    }
 
-      0%,
-      100% {
-        transform: translateY(0);
-      }
+    @keyframes pulseDot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.5; transform:scale(1.3); }
+    }
 
-      50% {
-        transform: translateY(-10px);
-      }
+    .hero-logo-mark {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: #0a0f1e;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -1px;
+      margin-bottom: 28px;
+      box-shadow: 0 0 40px rgba(245,158,11,.3), 0 8px 32px rgba(0,0,0,.4);
     }
 
     .hero-title {
-      font-size: 36px;
-      font-weight: 800;
-      margin-bottom: 12px;
-      background: var(--grad-amber);
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      color: #f1f5f9;
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero-subtitle {
-      color: var(--text-secondary);
-      font-size: 15px;
-      line-height: 1.7;
-      max-width: 320px;
-    }
-
-    .hero-features {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 40px;
-      text-align: left;
-    }
-
-    .hero-feat {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-secondary);
-      font-size: 14px;
-    }
-
-    .hero-feat .feat-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--amber-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-size: 16px;
+      color: #94a3b8;
+      line-height: 1.7;
+      max-width: 380px;
+      margin-bottom: 48px;
+    }
+
+    .hero-features { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+
+    .feat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      background: rgba(30,41,59,.45);
+      border: 1px solid rgba(51,65,85,.5);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      transition: all .25s ease;
+    }
+
+    .feat-item:hover {
+      border-color: rgba(245,158,11,.3);
+      background: rgba(245,158,11,.05);
+      transform: translateX(4px);
+    }
+
+    .feat-icon-box {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
       flex-shrink: 0;
     }
 
-    .auth-right {
+    .feat-icon-box.amber  { background: rgba(245,158,11,.15); }
+    .feat-icon-box.blue   { background: rgba(59,130,246,.15); }
+    .feat-icon-box.green  { background: rgba(16,185,129,.15); }
+    .feat-icon-box.purple { background: rgba(139,92,246,.15); }
+
+    .feat-text h4 { font-size: 14px; font-weight: 600; color: #f1f5f9; margin-bottom: 2px; }
+    .feat-text p  { font-size: 12px; color: #64748b; }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(51,65,85,.5);
+      width: 100%;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-top: 4px;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       RIGHT LOGIN PANEL
+    ──────────────────────────────────────────────────────── */
+    .login-panel {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px;
-      background: var(--bg-primary);
+      padding: 40px 48px;
+      background: rgba(6,11,24,.8);
+      backdrop-filter: blur(20px);
     }
 
-    .password-toggle {
+    .login-card { width: 100%; max-width: 420px; }
+
+    /* Header */
+    .login-header { margin-bottom: 36px; }
+
+    .login-header .brand-mini {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .brand-mini-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900;
+      color: #0a0f1e;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .brand-mini-name {
+      font-size: 15px; font-weight: 700;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .login-header h1 {
+      font-size: 30px; font-weight: 800;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 8px; line-height: 1.2;
+    }
+
+    .login-header p { font-size: 14px; color: #64748b; }
+
+    /* Form Fields */
+    .field-group { margin-bottom: 18px; }
+
+    .field-label {
+      display: block;
+      font-size: 12px; font-weight: 600;
+      color: #64748b;
+      margin-bottom: 8px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .field-wrapper { position: relative; }
+
+    .field-icon {
       position: absolute;
-      right: 12px;
-      top: 50%;
+      left: 14px; top: 50%;
       transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text-muted);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .field-input {
+      width: 100%;
+      height: 50px;
+      padding: 0 44px;
+      background: rgba(15,23,42,.8);
+      border: 1.5px solid rgba(51,65,85,.6);
+      border-radius: 12px;
+      color: #f1f5f9;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all .25s ease;
+    }
+
+    .field-input::placeholder { color: #334155; }
+
+    .field-input:focus {
+      border-color: #f59e0b;
+      background: rgba(15,23,42,1);
+      box-shadow: 0 0 0 3px rgba(245,158,11,.12);
+    }
+
+    .pwd-toggle {
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: #475569; cursor: pointer;
+      font-size: 17px; padding: 4px;
+      line-height: 1;
+      transition: color .2s;
+    }
+
+    .pwd-toggle:hover { color: #f59e0b; }
+
+    /* Options row */
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+
+    .remember-label {
+      display: flex; align-items: center; gap: 8px;
       cursor: pointer;
-      font-size: 18px;
-      padding: 4px;
+      font-size: 13px; color: #64748b;
+      font-weight: 400;
+      text-transform: none; letter-spacing: 0;
     }
 
-    .password-toggle:hover {
-      color: var(--text-primary);
+    .remember-label input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: #f59e0b;
+      cursor: pointer;
     }
 
-    .error-msg {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+    .forgot-link {
+      font-size: 13px; font-weight: 600;
+      color: #f59e0b;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+
+    .forgot-link:hover { opacity: .75; }
+
+    /* Error */
+    .alert-error {
+      display: none;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.25);
+      border-left: 3px solid #ef4444;
       color: #fca5a5;
       padding: 12px 16px;
-      border-radius: var(--radius-sm);
+      border-radius: 10px;
       font-size: 13px;
-      display: none;
+      margin-bottom: 18px;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.5;
     }
 
-    .error-msg.show {
-      display: block;
+    .alert-error.visible { display: flex; }
+
+    /* Sign In Button */
+    .btn-signin {
+      width: 100%; height: 52px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: none; border-radius: 12px;
+      color: #0a0f1e;
+      font-size: 15px; font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      transition: all .25s ease;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      position: relative; overflow: hidden;
+      letter-spacing: .01em;
     }
 
-    @media (max-width: 768px) {
-      .auth-bg {
-        grid-template-columns: 1fr;
-      }
+    .btn-signin::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.15), transparent);
+      opacity: 0;
+      transition: opacity .25s;
+    }
 
-      .auth-hero {
-        display: none;
-      }
+    .btn-signin:hover::before { opacity: 1; }
+
+    .btn-signin:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(245,158,11,.4);
+    }
+
+    .btn-signin:active { transform: translateY(0); }
+
+    .btn-signin:disabled {
+      opacity: .7; cursor: not-allowed; transform: none;
+    }
+
+    .btn-spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(10,15,30,.3);
+      border-top-color: #0a0f1e;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Divider */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 24px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: rgba(51,65,85,.5);
+    }
+
+    .divider span {
+      font-size: 12px; color: #475569;
+      font-weight: 500;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+
+    /* Footer */
+    .login-footer { text-align: center; }
+    .login-footer p { font-size: 14px; color: #475569; margin-bottom: 14px; }
+    .login-footer a { color: #f59e0b; font-weight: 600; text-decoration: none; }
+    .login-footer a:hover { text-decoration: underline; }
+
+    .login-notice {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 12px; color: #334155;
+      padding: 10px 16px;
+      background: rgba(15,23,42,.5);
+      border-radius: 8px;
+      border: 1px solid rgba(51,65,85,.3);
+      margin-bottom: 16px;
+    }
+
+    .theme-toggle {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: rgba(30,41,59,.5);
+      border: 1px solid rgba(51,65,85,.5);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 12px; font-weight: 500; color: #64748b;
+      cursor: pointer;
+      transition: all .2s;
+      margin: 0 auto;
+    }
+
+    .theme-toggle:hover { border-color: rgba(245,158,11,.3); color: #f59e0b; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .login-page { grid-template-columns: 1fr; }
+      .hero-panel { display: none; }
+      .login-panel { padding: 40px 24px; }
     }
   </style>
-  <link rel="stylesheet" href="/css/professional-ui-fix.css">
-  <link rel="stylesheet" href="/css/custom-select-fix.css">
 </head>
 
 <body>
-  <div class="auth-bg">
-    <div class="auth-hero">
-      <div class="hero-content">
-        <div class="brand-mark brand-mark-lg">
-          <span>TK</span>
+  <!-- Animated Background -->
+  <div class="bg-animated">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <div class="login-page">
+    <!-- ── Left Hero Panel ── -->
+    <div class="hero-panel">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Azure Cloud-Powered
+      </div>
+
+      <div class="hero-logo-mark">TK</div>
+
+      <h1 class="hero-title">
+        Tunnel<span class="highlight">KMS</span>
+      </h1>
+      <p class="hero-subtitle">
+        The complete knowledge management system for tunnel construction projects — secure, intelligent, and built for engineering teams.
+      </p>
+
+      <div class="hero-features">
+        <div class="feat-item">
+          <div class="feat-icon-box amber">📁</div>
+          <div class="feat-text">
+            <h4>Secure Document Management</h4>
+            <p>Store and access all project files with role-based permissions</p>
+          </div>
         </div>
-        <h1 class="hero-title">TunnelKMS</h1>
-        <p class="hero-subtitle">
-          Cloud-Based Construction Knowledge Management System for Tunnel Projects
-        </p>
-
-        <div class="hero-features">
-          <div class="hero-feat">
-            <div class="feat-icon"></div>
-            <span>Secure document management for all tunnel data</span>
+        <div class="feat-item">
+          <div class="feat-icon-box blue">🤖</div>
+          <div class="feat-text">
+            <h4>AI-Powered Assistant</h4>
+            <p>Ask questions about your documents using Google Gemini</p>
           </div>
-
-          <div class="hero-feat">
-            <div class="feat-icon"></div>
-            <span>AI assistant powered by Google Gemini</span>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon-box green">📊</div>
+          <div class="feat-text">
+            <h4>Real-Time Analytics</h4>
+            <p>Dashboard insights, progress tracking and reporting</p>
           </div>
-
-          <div class="hero-feat">
-            <div class="feat-icon"></div>
-            <span>Role-based access for teams</span>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon-box purple">👥</div>
+          <div class="feat-text">
+            <h4>Team Role Management</h4>
+            <p>Admin, Manager, Engineer and Viewer access levels</p>
           </div>
+        </div>
+      </div>
 
-          <div class="hero-feat">
-            <div class="feat-icon"></div>
-            <span>Real-time analytics & reporting</span>
-          </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-value">99.9%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Azure</div>
+          <div class="stat-label">Cloud</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">256‑bit</div>
+          <div class="stat-label">Encrypted</div>
         </div>
       </div>
     </div>
 
-    <div class="auth-right">
-      <div class="auth-card">
-        <div class="auth-logo">
-          <div class="brand-mark">
-            <span>TK</span>
+    <!-- ── Right Login Panel ── -->
+    <div class="login-panel">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="brand-mini">
+            <div class="brand-mini-icon">TK</div>
+            <span class="brand-mini-name">TunnelKMS</span>
           </div>
-          <h1>Welcome back</h1>
-          <p>Sign in to your TunnelKMS account</p>
+          <h1>Welcome back 👋</h1>
+          <p>Sign in to your account to continue</p>
         </div>
 
-        <div class="error-msg" id="errorMsg"></div>
+        <!-- Error Alert -->
+        <div class="alert-error" id="errorAlert">
+          <span>⚠️</span>
+          <span id="errorText"></span>
+        </div>
 
-        <form class="auth-form" id="loginForm">
-          <div class="input-group">
-            <label>Email Address <span class="req">*</span></label>
-            <div class="input-icon">
-              <span class="icon"></span>
-              <input type="email" id="email" placeholder="engineer@company.com" required autocomplete="email" />
+        <!-- Login Form -->
+        <form id="loginForm" autocomplete="on" novalidate>
+          <div class="field-group">
+            <label class="field-label" for="email">Email Address</label>
+            <div class="field-wrapper">
+              <span class="field-icon">✉️</span>
+              <input
+                type="email"
+                id="email"
+                class="field-input"
+                placeholder="engineer@company.com"
+                required
+                autocomplete="email"
+              />
             </div>
           </div>
 
-          <div class="input-group">
-            <label>Password <span class="req">*</span></label>
-            <div class="input-icon" style="position: relative;">
-              <span class="icon"></span>
-              <input type="password" id="password" placeholder="Enter your password" required
-                autocomplete="current-password" style="padding-right: 44px;" />
-              <button type="button" class="password-toggle" id="togglePwd">️</button>
+          <div class="field-group">
+            <label class="field-label" for="password">Password</label>
+            <div class="field-wrapper">
+              <span class="field-icon">🔑</span>
+              <input
+                type="password"
+                id="password"
+                class="field-input"
+                placeholder="Enter your password"
+                required
+                autocomplete="current-password"
+                style="padding-right: 48px;"
+              />
+              <button type="button" class="pwd-toggle" id="togglePwd" title="Show/hide password">👁️</button>
             </div>
           </div>
 
-          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px;">
-            <label
-              style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; letter-spacing: 0; color: var(--text-secondary); font-weight: 400;">
-              <input type="checkbox" id="rememberMe" style="width: 16px; height: 16px; accent-color: var(--amber);" />
+          <div class="login-options">
+            <label class="remember-label">
+              <input type="checkbox" id="rememberMe" />
               Remember me
             </label>
-
-            <a href="forgot-password.html" style="color: var(--amber); font-weight: 500;">
-              Forgot password?
-            </a>
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">
+          <button type="submit" class="btn-signin" id="loginBtn">
             Sign In →
           </button>
         </form>
 
-        <div class="auth-divider" style="margin: 20px 0;">OR</div>
+        <div class="divider"><span>or</span></div>
 
-        <p style="text-align: center; font-size: 14px; color: var(--text-secondary);">
-          Don't have an account?
-          <a href="signup.html" style="font-weight: 600;">Create account</a>
-        </p>
-
-        <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 12px;">
-          Account access is approved by admin.
-        </p>
-
-        <div style="text-align: center; margin-top: 24px;">
-          <button onclick="Theme.toggle(); updateThemeBtn()" id="themeBtn" class="btn btn-ghost btn-sm">
-             Dark Mode
+        <div class="login-footer">
+          <p>Don't have an account? <a href="signup.html">Create account</a></p>
+          <div class="login-notice">
+            🔐 Account access is approved by your administrator
+          </div>
+          <button onclick="toggleTheme()" id="themeBtn" class="theme-toggle">
+            🌙 Dark Mode
           </button>
         </div>
       </div>
@@ -260,66 +638,69 @@
   </div>
 
   <script src="../js/app.js"></script>
-
   <script>
+    // Redirect if already logged in
     if (Auth.isLoggedIn()) {
-      window.location.href = "dashboard.html";
+      window.location.href = 'dashboard.html';
+    }
+
+    function toggleTheme() {
+      Theme.toggle();
+      updateThemeBtn();
     }
 
     function updateThemeBtn() {
-      const btn = document.getElementById("themeBtn");
-      btn.textContent = Theme.get() === "dark" ? "️ Light Mode" : " Dark Mode";
+      const btn = document.getElementById('themeBtn');
+      btn.textContent = Theme.get() === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
 
     updateThemeBtn();
 
-    document.getElementById("togglePwd").addEventListener("click", function () {
-      const input = document.getElementById("password");
-      const isText = input.type === "text";
-
-      input.type = isText ? "password" : "text";
-      this.textContent = isText ? "️" : "";
+    document.getElementById('togglePwd').addEventListener('click', function () {
+      const input = document.getElementById('password');
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      this.textContent = isText ? '👁️' : '🙈';
     });
 
-    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    function showError(msg) {
+      const alert = document.getElementById('errorAlert');
+      document.getElementById('errorText').textContent = msg;
+      alert.classList.add('visible');
+    }
+
+    function hideError() {
+      document.getElementById('errorAlert').classList.remove('visible');
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
       e.preventDefault();
+      hideError();
 
-      const btn = document.getElementById("loginBtn");
-      const errEl = document.getElementById("errorMsg");
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('loginBtn');
 
-      errEl.classList.remove("show");
-      errEl.textContent = "";
+      if (!email || !password) {
+        showError('Please enter your email and password.');
+        return;
+      }
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-
-      btn.innerHTML = '<span class="spinner"></span> Signing in...';
-      btn.disabled = true;
+      btn.innerHTML = '<div class="btn-spinner"></div> Signing in...';
+      btn.disabled  = true;
 
       try {
-        const data = await API.post("/azure-auth/login", {
-          email,
-          password
-        });
-
+        const data = await API.post('/azure-auth/login', { email, password });
         Auth.setSession(data.token, data.user);
-
-        Toast.success("Welcome! Redirecting...");
-
-        setTimeout(function () {
-          window.location.href = "dashboard.html";
-        }, 800);
+        Toast.success('Welcome back! Redirecting...');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
       } catch (err) {
-        errEl.textContent = err.message || "Login failed";
-        errEl.classList.add("show");
-
-        btn.innerHTML = "Sign In →";
-        btn.disabled = false;
+        showError(err.message || 'Login failed. Please check your credentials.');
+        btn.innerHTML = 'Sign In →';
+        btn.disabled  = false;
       }
     });
   </script>
-  <script src="/js/professional-ui-fix.js"></script>
-  <script src="/js/custom-select-fix.js"></script>
 </body>
 
 </html>
