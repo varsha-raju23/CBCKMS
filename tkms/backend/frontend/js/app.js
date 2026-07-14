@@ -383,3 +383,52 @@ Theme.init();
 })();
 // ===== END GLOBAL THEME + SELECT FIX =====
 
+
+/* ===== DROPDOWN ALWAYS-OPEN FIX ===== */
+(function () {
+  function fixDropdowns() {
+    document.querySelectorAll("select").forEach(function (select) {
+      select.removeAttribute("size");
+      select.removeAttribute("multiple");
+      select.size = 1;
+      select.style.height = "48px";
+      select.style.maxHeight = "48px";
+      select.style.overflow = "hidden";
+      select.style.display = "block";
+    });
+
+    const departments = [
+      "Tunnel Design",
+      "Construction",
+      "Safety",
+      "Quality",
+      "Survey",
+      "Planning",
+      "Geotechnical",
+      "Electrical",
+      "Mechanical",
+      "Admin"
+    ];
+
+    document.querySelectorAll("select").forEach(function (select) {
+      const idName = ((select.id || "") + " " + (select.name || "") + " " + (select.getAttribute("placeholder") || "")).toLowerCase();
+
+      if (idName.includes("department")) {
+        const current = select.value;
+        select.innerHTML = '<option value="">Select Department</option>' +
+          departments.map(d => `<option value="${d}">${d}</option>`).join("");
+        if (current) select.value = current;
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fixDropdowns);
+  } else {
+    fixDropdowns();
+  }
+
+  setTimeout(fixDropdowns, 500);
+  setTimeout(fixDropdowns, 1500);
+})();
+ /* ===== END DROPDOWN ALWAYS-OPEN FIX ===== */

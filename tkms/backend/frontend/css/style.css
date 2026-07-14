@@ -1706,3 +1706,16 @@ html[data-theme="light"] select option {
 }
 /* ===== END SELECT + LIGHT THEME FIX ===== */
 
+
+/* ===== SELECT CLOSED FIX ===== */
+select:not([multiple]) {
+  height: 48px !important;
+  max-height: 48px !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+select:not([multiple]) option {
+  height: auto !important;
+}
+ /* ===== END SELECT CLOSED FIX ===== */
