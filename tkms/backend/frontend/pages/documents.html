@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documents â€” TunnelKMS</title>
+  <title>Documents — TunnelKMS</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
     .filters-bar { display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px;align-items:center; }
@@ -50,13 +50,13 @@
 <div class="page-wrapper" style="margin-top:64px;">
   <div class="main-content">
     <div class="page-header">
-      <h1>ðŸ“ Documents</h1>
+      <h1> Documents</h1>
       <p>Browse, search and manage all tunnel construction documents</p>
     </div>
 
     <!-- Filters -->
     <div class="filters-bar">
-      <input type="text" id="searchInput" placeholder="ðŸ” Search by name, project, description..." oninput="debounceSearch()">
+      <input type="text" id="searchInput" placeholder=" Search by name, project, description..." oninput="debounceSearch()">
       <select id="filterType" onchange="loadDocs()">
         <option value="">All Types</option>
         <option>Tunnel Design</option><option>Safety Reports</option><option>Daily Progress Reports</option>
@@ -74,9 +74,9 @@
         <option value="-createdAt">Newest First</option>
         <option value="createdAt">Oldest First</option>
         <option value="-viewCount">Most Viewed</option>
-        <option value="originalName">Name Aâ†’Z</option>
+        <option value="originalName">Name A→Z</option>
       </select>
-      <button onclick="openUploadModal()" class="btn btn-primary">ðŸ“¤ Upload</button>
+      <button onclick="openUploadModal()" class="btn btn-primary"> Upload</button>
     </div>
 
     <div class="results-info" id="resultsInfo"></div>
@@ -91,15 +91,15 @@
 
     <!-- Viewed History Tab -->
     <div style="margin-top:40px;">
-      <div class="section-title">ðŸ‘ï¸ Recently Viewed</div>
+      <div class="section-title">️ Recently Viewed</div>
       <div id="viewedList" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
   </div>
 
   <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-brand">ðŸš‡ TunnelKMS</div>
-      <div class="footer-copy">Â© 2025 TunnelKMS Â· Cloud Construction Knowledge Platform</div>
+      <div class="footer-brand"> TunnelKMS</div>
+      <div class="footer-copy">© 2025 TunnelKMS · Cloud Construction Knowledge Platform</div>
     </div>
   </footer>
 </div>
@@ -108,14 +108,14 @@
 <div class="modal-overlay hidden" id="uploadModal">
   <div class="modal" style="max-width:660px;">
     <div class="modal-header">
-      <h2>ðŸ“¤ Upload Document</h2>
-      <button class="modal-close" onclick="closeUploadModal()">Ã—</button>
+      <h2> Upload Document</h2>
+      <button class="modal-close" onclick="closeUploadModal()">×</button>
     </div>
     <div class="modal-body">
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event)" style="padding:32px;">
-        <div class="upload-icon">â˜ï¸</div>
+        <div class="upload-icon">️</div>
         <p id="dropText"><strong>Click to browse</strong> or drag & drop</p>
-        <p style="font-size:12px;margin-top:6px;color:var(--text-muted);">PDF, DOC, DOCX, XLS, DWG, Images Â· Max 50MB</p>
+        <p style="font-size:12px;margin-top:6px;color:var(--text-muted);">PDF, DOC, DOCX, XLS, DWG, Images · Max 50MB</p>
       </div>
       <input type="file" id="fileInput" style="display:none;" onchange="handleFileInput(this)">
 
@@ -148,7 +148,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
-      <button class="btn btn-primary" id="uploadBtn" onclick="doUpload()">ðŸ“¤ Upload</button>
+      <button class="btn btn-primary" id="uploadBtn" onclick="doUpload()"> Upload</button>
     </div>
   </div>
 </div>
@@ -157,8 +157,8 @@
 <div class="modal-overlay hidden" id="viewModal">
   <div class="modal" style="max-width:700px;">
     <div class="modal-header">
-      <h2>ðŸ“„ Document Details</h2>
-      <button class="modal-close" onclick="document.getElementById('viewModal').classList.add('hidden')">Ã—</button>
+      <h2> Document Details</h2>
+      <button class="modal-close" onclick="document.getElementById('viewModal').classList.add('hidden')">×</button>
     </div>
     <div class="modal-body" id="viewModalBody"></div>
     <div class="modal-footer" id="viewModalFooter"></div>
@@ -207,10 +207,10 @@
     if (!docs.length) {
       document.getElementById('docsGrid').innerHTML = `
         <div class="empty-state" style="grid-column:1/-1;">
-          <div class="empty-icon">ðŸ“­</div>
+          <div class="empty-icon"></div>
           <h3>No documents found</h3>
           <p>Try adjusting your search or filters, or upload a new document</p>
-          <button onclick="openUploadModal()" class="btn btn-primary" style="margin-top:16px;">ðŸ“¤ Upload Document</button>
+          <button onclick="openUploadModal()" class="btn btn-primary" style="margin-top:16px;"> Upload Document</button>
         </div>`;
       return;
     }
@@ -227,16 +227,16 @@
         <div class="doc-card-meta">
           <div class="doc-meta-item"><span class="label">Type</span><span class="value" style="color:${Format.docTypeColor(doc.documentType)};">${doc.documentType}</span></div>
           <div class="doc-meta-item"><span class="label">Department</span><span class="value">${doc.departmentName}</span></div>
-          <div class="doc-meta-item"><span class="label">Uploaded by</span><span class="value">${doc.uploadedByName||'â€”'}</span></div>
+          <div class="doc-meta-item"><span class="label">Uploaded by</span><span class="value">${doc.uploadedByName||'—'}</span></div>
           <div class="doc-meta-item"><span class="label">Size</span><span class="value">${Format.fileSize(doc.fileSize)}</span></div>
           <div class="doc-meta-item"><span class="label">Date</span><span class="value">${Format.date(doc.createdAt)}</span></div>
-          <div class="doc-meta-item"><span class="label">Views</span><span class="value">ðŸ‘ï¸ ${doc.viewCount||0}</span></div>
+          <div class="doc-meta-item"><span class="label">Views</span><span class="value">️ ${doc.viewCount||0}</span></div>
         </div>
-        ${doc.tunnelSection ? `<div style="font-size:12px;color:var(--text-muted);">ðŸ“ ${doc.tunnelSection}</div>` : ''}
+        ${doc.tunnelSection ? `<div style="font-size:12px;color:var(--text-muted);"> ${doc.tunnelSection}</div>` : ''}
         <div class="doc-card-actions">
-          <button onclick="viewDocument('${doc._id}')" class="btn btn-secondary btn-sm" style="flex:1;">ðŸ‘ï¸ View</button>
+          <button onclick="viewDocument('${doc._id}')" class="btn btn-secondary btn-sm" style="flex:1;">️ View</button>
           <button onclick="downloadDoc('${doc._id}','${doc.originalName}')" class="btn btn-primary btn-sm" style="flex:1;">â¬‡ï¸ Download</button>
-          ${canDelete(doc) ? `<button onclick="deleteDoc('${doc._id}',this)" class="btn btn-danger btn-sm">ðŸ—‘ï¸</button>` : ''}
+          ${canDelete(doc) ? `<button onclick="deleteDoc('${doc._id}',this)" class="btn btn-danger btn-sm">️</button>` : ''}
         </div>
       </div>
     `).join('');
@@ -275,18 +275,18 @@
         <div class="doc-view-grid">
           <div class="detail-row"><div class="dl">Document Type</div><div class="dv"><span style="color:${Format.docTypeColor(doc.documentType)};">â— </span>${doc.documentType}</div></div>
           <div class="detail-row"><div class="dl">Department</div><div class="dv">${doc.departmentName}</div></div>
-          <div class="detail-row"><div class="dl">Uploaded By</div><div class="dv">${doc.uploadedByName||'â€”'}</div></div>
+          <div class="detail-row"><div class="dl">Uploaded By</div><div class="dv">${doc.uploadedByName||'—'}</div></div>
           <div class="detail-row"><div class="dl">File Size</div><div class="dv">${Format.fileSize(doc.fileSize)}</div></div>
           <div class="detail-row"><div class="dl">Upload Date</div><div class="dv">${Format.dateTime(doc.createdAt)}</div></div>
-          <div class="detail-row"><div class="dl">Total Views</div><div class="dv">ðŸ‘ï¸ ${doc.viewCount}</div></div>
-          ${doc.tunnelSection?`<div class="detail-row"><div class="dl">Tunnel Section</div><div class="dv">ðŸ“ ${doc.tunnelSection}</div></div>`:''}
+          <div class="detail-row"><div class="dl">Total Views</div><div class="dv">️ ${doc.viewCount}</div></div>
+          ${doc.tunnelSection?`<div class="detail-row"><div class="dl">Tunnel Section</div><div class="dv"> ${doc.tunnelSection}</div></div>`:''}
           <div class="detail-row"><div class="dl">Downloads</div><div class="dv">â¬‡ï¸ ${doc.downloadCount||0}</div></div>
         </div>
         ${doc.description?`<div><div class="dl" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Description</div><div class="desc-box">${doc.description}</div></div>`:''}
-        ${doc.tags?.length?`<div><div class="dl" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Tags</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${doc.tags.map(t=>`<span class="chip">ðŸ·ï¸ ${t}</span>`).join('')}</div></div>`:''}
+        ${doc.tags?.length?`<div><div class="dl" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Tags</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${doc.tags.map(t=>`<span class="chip">️ ${t}</span>`).join('')}</div></div>`:''}
       `;
       document.getElementById('viewModalFooter').innerHTML = `
-        <a href="http://localhost:5000${doc.fileUrl}" target="_blank" class="btn btn-secondary">ðŸ‘ï¸ Open File</a>
+        <a href="http://localhost:5000${doc.fileUrl}" target="_blank" class="btn btn-secondary">️ Open File</a>
         <button onclick="downloadDoc('${doc._id}','${doc.originalName}')" class="btn btn-primary">â¬‡ï¸ Download</button>
       `;
     } catch(e) {
@@ -317,7 +317,7 @@
           <span style="font-size:22px;">${Format.fileIcon(doc.originalName)}</span>
           <div style="flex:1;">
             <div style="font-weight:600;font-size:13px;">${doc.originalName}</div>
-            <div style="font-size:12px;color:var(--text-muted);">${doc.projectName} Â· ${doc.documentType}</div>
+            <div style="font-size:12px;color:var(--text-muted);">${doc.projectName} · ${doc.documentType}</div>
           </div>
           <div style="font-size:12px;color:var(--text-muted);">${Format.timeAgo(doc.lastViewedAt)}</div>
         </div>
@@ -334,7 +334,7 @@
     document.getElementById('uploadProgress').style.display='none';
     document.getElementById('uploadBar').style.width='0%';
     document.getElementById('uploadBtn').disabled=false;
-    document.getElementById('uploadBtn').innerHTML='ðŸ“¤ Upload';
+    document.getElementById('uploadBtn').innerHTML=' Upload';
   }
   function handleFileInput(input) { if(input.files[0]){uploadFile=input.files[0];document.getElementById('dropText').innerHTML=`<strong>${uploadFile.name}</strong> (${Format.fileSize(uploadFile.size)})`; } }
   function handleDrop(e) { e.preventDefault(); if(e.dataTransfer.files[0]){uploadFile=e.dataTransfer.files[0];document.getElementById('dropText').innerHTML=`<strong>${uploadFile.name}</strong> (${Format.fileSize(uploadFile.size)})`; } }
@@ -365,15 +365,15 @@
       const data=await API.upload('/documents/upload',fd);
       clearInterval(iv);
       document.getElementById('uploadBar').style.width='100%';
-      document.getElementById('uploadMsg').textContent='âœ… Uploaded Successfully!';
+      document.getElementById('uploadMsg').textContent=' Uploaded Successfully!';
       document.getElementById('uploadMsg').style.color='var(--success)';
-      Toast.success(`âœ… Uploaded! ID: ${data.document.documentId}`);
+      Toast.success(` Uploaded! ID: ${data.document.documentId}`);
       setTimeout(()=>{ closeUploadModal(); loadDocs(); },1200);
     } catch(err) {
       clearInterval(iv);
-      document.getElementById('uploadMsg').textContent='âŒ '+err.message;
+      document.getElementById('uploadMsg').textContent=' '+err.message;
       document.getElementById('uploadMsg').style.color='var(--danger)';
-      btn.disabled=false; btn.innerHTML='ðŸ“¤ Upload';
+      btn.disabled=false; btn.innerHTML=' Upload';
     }
   }
 

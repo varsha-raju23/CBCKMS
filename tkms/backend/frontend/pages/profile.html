@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Profile â€” TunnelKMS</title>
+  <title>My Profile — TunnelKMS</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
     .profile-layout { display:grid;grid-template-columns:320px 1fr;gap:24px; }
@@ -46,7 +46,7 @@
 <div class="page-wrapper" style="margin-top:64px;">
   <div class="main-content">
     <div class="page-header">
-      <h1>ðŸ‘¤ My Profile</h1>
+      <h1> My Profile</h1>
       <p>Manage your account details and preferences</p>
     </div>
 
@@ -55,15 +55,15 @@
       <div>
         <div class="profile-card">
           <div class="profile-avatar" id="avatarEl">?</div>
-          <div class="profile-name" id="profileName">â€”</div>
-          <div class="profile-email" id="profileEmail">â€”</div>
-          <span class="badge" id="profileRole" style="font-size:12px;">â€”</span>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-email" id="profileEmail">—</div>
+          <span class="badge" id="profileRole" style="font-size:12px;">—</span>
           <div class="profile-stats">
-            <div class="profile-stat"><div class="val" id="stat-uploads">â€”</div><div class="lbl">Uploaded</div></div>
-            <div class="profile-stat"><div class="val" id="stat-viewed">â€”</div><div class="lbl">Viewed</div></div>
+            <div class="profile-stat"><div class="val" id="stat-uploads">—</div><div class="lbl">Uploaded</div></div>
+            <div class="profile-stat"><div class="val" id="stat-viewed">—</div><div class="lbl">Viewed</div></div>
           </div>
-          <button onclick="document.querySelector('[data-tab=edit]').click()" class="btn btn-primary btn-full" style="margin-top:20px;">âœï¸ Edit Profile</button>
-          <button onclick="Nav.logout()" class="btn btn-ghost btn-full" style="margin-top:10px;">ðŸšª Logout</button>
+          <button onclick="document.querySelector('[data-tab=edit]').click()" class="btn btn-primary btn-full" style="margin-top:20px;">️ Edit Profile</button>
+          <button onclick="Nav.logout()" class="btn btn-ghost btn-full" style="margin-top:10px;"> Logout</button>
         </div>
       </div>
 
@@ -71,10 +71,10 @@
       <div>
         <div class="tabs">
           <div class="tab active" data-tab="info" onclick="switchTab('info',this)">â„¹ï¸ Info</div>
-          <div class="tab" data-tab="uploads" onclick="switchTab('uploads',this)">ðŸ“ Uploads</div>
-          <div class="tab" data-tab="viewed" onclick="switchTab('viewed',this)">ðŸ‘ï¸ Viewed</div>
-          <div class="tab" data-tab="edit" onclick="switchTab('edit',this)">âœï¸ Edit</div>
-          <div class="tab" data-tab="security" onclick="switchTab('security',this)">ðŸ”’ Security</div>
+          <div class="tab" data-tab="uploads" onclick="switchTab('uploads',this)"> Uploads</div>
+          <div class="tab" data-tab="viewed" onclick="switchTab('viewed',this)">️ Viewed</div>
+          <div class="tab" data-tab="edit" onclick="switchTab('edit',this)">️ Edit</div>
+          <div class="tab" data-tab="security" onclick="switchTab('security',this)"> Security</div>
         </div>
 
         <!-- Info Tab -->
@@ -86,23 +86,23 @@
 
         <!-- Uploads Tab -->
         <div class="tab-panel card" id="tab-uploads">
-          <h3 style="margin-bottom:16px;">ðŸ“¤ My Uploaded Documents</h3>
+          <h3 style="margin-bottom:16px;"> My Uploaded Documents</h3>
           <div id="myUploads"><div style="color:var(--text-muted);font-size:13px;">Loading...</div></div>
         </div>
 
         <!-- Viewed Tab -->
         <div class="tab-panel card" id="tab-viewed">
-          <h3 style="margin-bottom:16px;">ðŸ‘ï¸ Recently Viewed Documents</h3>
+          <h3 style="margin-bottom:16px;">️ Recently Viewed Documents</h3>
           <div id="myViewed"><div style="color:var(--text-muted);font-size:13px;">Loading...</div></div>
         </div>
 
         <!-- Edit Tab -->
         <div class="tab-panel card" id="tab-edit">
-          <h3 style="margin-bottom:20px;">âœï¸ Edit Profile</h3>
+          <h3 style="margin-bottom:20px;">️ Edit Profile</h3>
           <form id="editForm">
             <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;">
               <div class="profile-avatar" id="editAvatarPreview" style="cursor:pointer;" onclick="document.getElementById('editPhoto').click()">?</div>
-              <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('editPhoto').click()">ðŸ“¸ Change Photo</button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('editPhoto').click()"> Change Photo</button>
               <input type="file" id="editPhoto" accept="image/*" style="display:none;" onchange="previewEditPhoto(this)">
             </div>
             <div class="form-grid">
@@ -121,18 +121,18 @@
               <div class="input-group"><label>Specialization</label><input type="text" id="e_spec"></div>
               <div class="input-group" style="grid-column:1/-1;"><label>Bio</label><textarea id="e_bio" rows="2" style="resize:vertical;"></textarea></div>
             </div>
-            <button type="submit" class="btn btn-primary btn-full" style="margin-top:20px;" id="saveProfileBtn">ðŸ’¾ Save Changes</button>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:20px;" id="saveProfileBtn"> Save Changes</button>
           </form>
         </div>
 
         <!-- Security Tab -->
         <div class="tab-panel card" id="tab-security">
-          <h3 style="margin-bottom:20px;">ðŸ”’ Change Password</h3>
+          <h3 style="margin-bottom:20px;"> Change Password</h3>
           <div class="pwd-form">
-            <div class="input-group"><label>Current Password</label><div class="input-icon" style="position:relative;"><span class="icon">ðŸ”’</span><input type="password" id="curPwd" placeholder="Current password" style="padding-right:36px;"><button type="button" class="password-toggle" onclick="togglePwdField('curPwd',this)">ðŸ‘ï¸</button></div></div>
-            <div class="input-group"><label>New Password</label><div class="input-icon" style="position:relative;"><span class="icon">ðŸ”‘</span><input type="password" id="newPwd" placeholder="Min. 8 characters" style="padding-right:36px;"><button type="button" class="password-toggle" onclick="togglePwdField('newPwd',this)">ðŸ‘ï¸</button></div></div>
-            <div class="input-group"><label>Confirm New Password</label><div class="input-icon"><span class="icon">ðŸ”‘</span><input type="password" id="confPwd" placeholder="Repeat new password"></div></div>
-            <button onclick="changePassword()" class="btn btn-primary" id="changePwdBtn">ðŸ”’ Update Password</button>
+            <div class="input-group"><label>Current Password</label><div class="input-icon" style="position:relative;"><span class="icon"></span><input type="password" id="curPwd" placeholder="Current password" style="padding-right:36px;"><button type="button" class="password-toggle" onclick="togglePwdField('curPwd',this)">️</button></div></div>
+            <div class="input-group"><label>New Password</label><div class="input-icon" style="position:relative;"><span class="icon"></span><input type="password" id="newPwd" placeholder="Min. 8 characters" style="padding-right:36px;"><button type="button" class="password-toggle" onclick="togglePwdField('newPwd',this)">️</button></div></div>
+            <div class="input-group"><label>Confirm New Password</label><div class="input-icon"><span class="icon"></span><input type="password" id="confPwd" placeholder="Repeat new password"></div></div>
+            <button onclick="changePassword()" class="btn btn-primary" id="changePwdBtn"> Update Password</button>
           </div>
         </div>
       </div>
@@ -141,8 +141,8 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-brand">ðŸš‡ TunnelKMS</div>
-      <div class="footer-copy">Â© 2025 TunnelKMS</div>
+      <div class="footer-brand"> TunnelKMS</div>
+      <div class="footer-copy">© 2025 TunnelKMS</div>
     </div>
   </footer>
 </div>
@@ -181,11 +181,11 @@
 
     // Info tab
     document.getElementById('infoGrid').innerHTML = [
-      {l:'Full Name',v:p.fullName||'â€”'},{l:'Email',v:user.email},{l:'Mobile',v:p.mobileNumber||'â€”'},
-      {l:'Department',v:p.department||'â€”'},{l:'Company',v:p.companyName||'â€”'},{l:'Company ID',v:p.companyId||'â€”'},
-      {l:'Role / Designation',v:p.roleInCompany||'â€”'},{l:'Experience',v:p.experience||'â€”'},
-      {l:'Specialization',v:p.specialization||'â€”'},{l:'Address',v:p.address||'â€”'},
-      {l:'Joined',v:Format.date(user.createdAt)},{l:'Last Login',v:Format.dateTime(user.lastLogin)||'â€”'}
+      {l:'Full Name',v:p.fullName||'—'},{l:'Email',v:user.email},{l:'Mobile',v:p.mobileNumber||'—'},
+      {l:'Department',v:p.department||'—'},{l:'Company',v:p.companyName||'—'},{l:'Company ID',v:p.companyId||'—'},
+      {l:'Role / Designation',v:p.roleInCompany||'—'},{l:'Experience',v:p.experience||'—'},
+      {l:'Specialization',v:p.specialization||'—'},{l:'Address',v:p.address||'—'},
+      {l:'Joined',v:Format.date(user.createdAt)},{l:'Last Login',v:Format.dateTime(user.lastLogin)||'—'}
     ].map(i=>`<div class="info-row"><div class="il">${i.l}</div><div class="iv">${i.v}</div></div>`).join('');
 
     // Pre-fill edit form
@@ -212,11 +212,11 @@
         <span class="dm-icon">${Format.fileIcon(doc.originalName)}</span>
         <div class="dm-info">
           <div class="dm-name">${doc.originalName}</div>
-          <div class="dm-sub">${doc.projectName} Â· ${doc.documentType} Â· ${Format.timeAgo(doc.createdAt)}</div>
+          <div class="dm-sub">${doc.projectName} · ${doc.documentType} · ${Format.timeAgo(doc.createdAt)}</div>
         </div>
         <span class="doc-id-tag">${doc.documentId}</span>
       </div>`).join('')
-      : '<div style="color:var(--text-muted);font-size:13px;">No uploads yet. <a href="dashboard.html">Upload your first document â†’</a></div>';
+      : '<div style="color:var(--text-muted);font-size:13px;">No uploads yet. <a href="dashboard.html">Upload your first document →</a></div>';
   }
 
   function renderViewed(docs) {
@@ -225,7 +225,7 @@
         <span class="dm-icon">${Format.fileIcon(doc.originalName)}</span>
         <div class="dm-info">
           <div class="dm-name">${doc.originalName}</div>
-          <div class="dm-sub">${doc.projectName} Â· ${Format.timeAgo(doc.lastViewedAt)}</div>
+          <div class="dm-sub">${doc.projectName} · ${Format.timeAgo(doc.lastViewedAt)}</div>
         </div>
       </div>`).join('')
       : '<div style="color:var(--text-muted);font-size:13px;">No documents viewed yet.</div>';
@@ -267,9 +267,9 @@
       const data=await API.upload('/users/profile',fd);
       Auth.setSession(Auth.getToken(),{...Auth.getUser(),profile:data.user.profile,isProfileComplete:true});
       Toast.success('Profile updated!');
-      btn.innerHTML='ðŸ’¾ Save Changes'; btn.disabled=false;
+      btn.innerHTML=' Save Changes'; btn.disabled=false;
       setTimeout(()=>location.reload(),1000);
-    } catch(err) { Toast.error(err.message); btn.innerHTML='ðŸ’¾ Save Changes'; btn.disabled=false; }
+    } catch(err) { Toast.error(err.message); btn.innerHTML=' Save Changes'; btn.disabled=false; }
   });
 
   async function changePassword() {
@@ -286,10 +286,10 @@
       Toast.success('Password changed successfully!');
       document.getElementById('curPwd').value=''; document.getElementById('newPwd').value=''; document.getElementById('confPwd').value='';
     } catch(err){Toast.error(err.message);}
-    btn.innerHTML='ðŸ”’ Update Password'; btn.disabled=false;
+    btn.innerHTML=' Update Password'; btn.disabled=false;
   }
 
-  function togglePwdField(id,btn){const i=document.getElementById(id);i.type=i.type==='text'?'password':'text';btn.textContent=i.type==='text'?'ðŸ™ˆ':'ðŸ‘ï¸';}
+  function togglePwdField(id,btn){const i=document.getElementById(id);i.type=i.type==='text'?'password':'text';btn.textContent=i.type==='text'?'':'️';}
 
   initProfile();
 </script>

@@ -21,46 +21,46 @@ const Nav = {
     <nav class="topnav" id="topnav">
       <div class="topnav-brand">
         <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-          <span style="font-size:28px;">🚇</span>
+          <span style="font-size:28px;"></span>
           <span class="topnav-title">TunnelKMS</span>
         </a>
       </div>
 
       <div class="topnav-links" id="navLinks">
         <a href="dashboard.html" class="${activePage==='dashboard'?'active':''}" >
-          📊 Dashboard
+           Dashboard
         </a>
         <a href="documents.html" class="${activePage==='documents'?'active':''}">
-          📁 Documents
+           Documents
         </a>
         <a href="ai-assistant.html" class="${activePage==='ai'?'active':''}">
-          🤖 AI Assistant
+           AI Assistant
         </a>
         <a href="help-center.html" class="${activePage==='help'?'active':''}">
-          ❓ Help Center
+           Help Center
         </a>
         ${isAdmin ? `<a href="admin.html" class="${activePage==='admin'?'active':''}" style="color:#ef4444;">
-          🛡️ Admin
+          ️ Admin
         </a>` : ''}
       </div>
 
       <div class="topnav-right">
         <!-- Theme Toggle -->
         <button onclick="Theme.toggle();updateThemeIcon()" id="themeToggleBtn" class="btn btn-ghost btn-sm" title="Toggle theme" style="padding:8px;">
-          ${Theme.get()==='dark'?'☀️':'🌙'}
+          ${Theme.get()==='dark'?'️':''}
         </button>
 
         <!-- Notifications -->
         <div class="dropdown notif-btn" id="notifDropdown">
           <button class="btn btn-ghost btn-sm" onclick="Nav.toggleNotif()" style="padding:8px;position:relative;">
-            🔔
+            
             <span class="notif-badge" id="notifBadge" style="${unreadCount===0?'display:none':''}">
               ${unreadCount > 9 ? '9+' : unreadCount}
             </span>
           </button>
           <div class="notif-panel" id="notifPanel">
             <div class="notif-panel-header">
-              <h3>🔔 Notifications</h3>
+              <h3> Notifications</h3>
               <button onclick="Nav.markAllRead()" class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px;">Mark all read</button>
             </div>
             <div class="notif-list" id="notifList">
@@ -70,7 +70,7 @@ const Nav = {
         </div>
 
         <!-- Mobile menu -->
-        <button class="btn btn-ghost btn-sm" id="mobileMenuBtn" style="padding:8px;" onclick="Nav.toggleMobile()">☰</button>
+        <button class="btn btn-ghost btn-sm" id="mobileMenuBtn" style="padding:8px;" onclick="Nav.toggleMobile()"></button>
 
         <!-- Profile Dropdown -->
         <div class="dropdown" id="profileDropdown">
@@ -88,11 +88,11 @@ const Nav = {
                 ${user?.role?.toUpperCase()}
               </span>
             </div>
-            <a href="profile.html" class="dropdown-item">👤 My Profile</a>
-            <a href="documents.html" class="dropdown-item">📁 My Documents</a>
-            ${isAdmin ? `<a href="admin.html" class="dropdown-item" style="color:var(--danger);">🛡️ Admin Panel</a>` : ''}
+            <a href="profile.html" class="dropdown-item"> My Profile</a>
+            <a href="documents.html" class="dropdown-item"> My Documents</a>
+            ${isAdmin ? `<a href="admin.html" class="dropdown-item" style="color:var(--danger);">️ Admin Panel</a>` : ''}
             <div class="dropdown-divider"></div>
-            <div class="dropdown-item danger" onclick="Nav.logout()">🚪 Logout</div>
+            <div class="dropdown-item danger" onclick="Nav.logout()"> Logout</div>
           </div>
         </div>
       </div>
@@ -177,5 +177,5 @@ const Nav = {
 
 function updateThemeIcon() {
   const btn = document.getElementById('themeToggleBtn');
-  if (btn) btn.textContent = Theme.get() === 'dark' ? '☀️' : '🌙';
+  if (btn) btn.textContent = Theme.get() === 'dark' ? '️' : '';
 }

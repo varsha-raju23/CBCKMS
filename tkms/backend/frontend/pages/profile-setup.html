@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Complete Your Profile â€” TunnelKMS</title>
+  <title>Complete Your Profile — TunnelKMS</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
     body { background:var(--bg-primary); min-height:100vh; padding:0; }
@@ -34,7 +34,7 @@
 </head>
 <body>
 <div class="setup-header">
-  <span style="font-size:28px;">ðŸš‡</span>
+  <span style="font-size:28px;"></span>
   <div>
     <h2>Complete Your Profile</h2>
     <p>This helps your team identify you and improves collaboration</p>
@@ -44,34 +44,34 @@
 <div class="setup-body">
   <!-- Steps -->
   <div class="steps-indicator">
-    <div class="step-dot done" id="s1">âœ“</div>
+    <div class="step-dot done" id="s1"></div>
     <div class="step-line done"></div>
-    <div class="step-dot done" id="s2">âœ“</div>
+    <div class="step-dot done" id="s2"></div>
     <div class="step-line done"></div>
     <div class="step-dot active" id="s3">3</div>
     <div class="step-line"></div>
     <div class="step-dot pending" id="s4">4</div>
   </div>
-  <p style="color:var(--text-muted);font-size:13px;margin-top:-28px;margin-bottom:32px;">Account Created â†’ Email Verified â†’ <strong style="color:var(--amber);">Profile Setup</strong> â†’ Dashboard</p>
+  <p style="color:var(--text-muted);font-size:13px;margin-top:-28px;margin-bottom:32px;">Account Created → Email Verified → <strong style="color:var(--amber);">Profile Setup</strong> → Dashboard</p>
 
   <form id="profileForm">
     <!-- Photo -->
     <div class="section-card">
-      <h3>ðŸ“¸ Profile Photo</h3>
+      <h3> Profile Photo</h3>
       <div class="photo-ring" id="photoRing" onclick="document.getElementById('photoInput').click()">
         <div class="photo-placeholder" id="photoPlaceholder">
-          <span>ðŸ‘¤</span>
+          <span></span>
           <p>Click to upload</p>
         </div>
         <img id="photoPreview" style="display:none;" alt="Profile photo">
       </div>
-      <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;">JPG, PNG or GIF Â· Max 5MB</p>
+      <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;">JPG, PNG or GIF · Max 5MB</p>
       <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
     </div>
 
     <!-- Personal Info -->
     <div class="section-card">
-      <h3>ðŸ‘¤ Personal Information</h3>
+      <h3> Personal Information</h3>
       <div class="form-grid">
         <div class="input-group">
           <label>Full Name <span class="req">*</span></label>
@@ -102,7 +102,7 @@
 
     <!-- Company Info -->
     <div class="section-card">
-      <h3>ðŸ—ï¸ Company & Role Details</h3>
+      <h3>️ Company & Role Details</h3>
       <div class="form-grid">
         <div class="input-group">
           <label>Company Name <span class="req">*</span></label>
@@ -139,7 +139,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary btn-full btn-lg" id="saveBtn" style="font-size:16px;padding:16px;">
-      ðŸš€ Save Profile & Go to Dashboard
+       Save Profile & Go to Dashboard
     </button>
   </form>
 </div>
@@ -203,7 +203,7 @@
       setTimeout(() => window.location.href = 'dashboard.html', 1000);
     } catch (err) {
       Toast.error(err.message);
-      btn.innerHTML = 'ðŸš€ Save Profile & Go to Dashboard';
+      btn.innerHTML = ' Save Profile & Go to Dashboard';
       btn.disabled = false;
     }
   });

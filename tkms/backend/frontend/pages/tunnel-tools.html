@@ -201,14 +201,14 @@
 <body>
     <div class="tools-page">
         <div class="tools-hero">
-            <h1>🚇 Tunnel Intelligence Tools</h1>
+            <h1> Tunnel Intelligence Tools</h1>
             <p>Professional support recommendation, cycle time estimation, and lessons-learned search for tunnel projects.</p>
         </div>
 
         <div class="tool-tabs">
-            <button class="tool-tab active" data-tab="support">🏗 Support System</button>
+            <button class="tool-tab active" data-tab="support"> Support System</button>
             <button class="tool-tab" data-tab="cycle">⏱ Cycle Time</button>
-            <button class="tool-tab" data-tab="problem">🔎 Problem Solver</button>
+            <button class="tool-tab" data-tab="problem"> Problem Solver</button>
         </div>
 
         <section id="support" class="tool-panel active">
@@ -263,7 +263,7 @@
                 <div class="tool-card">
                     <h2>Recommendation Output</h2>
                     <div id="supportResult" class="result-box">
-                        <div class="result-title">🏗 Support recommendations will appear here</div>
+                        <div class="result-title"> Support recommendations will appear here</div>
                         Fill rock parameters and click the button.
                     </div>
                 </div>
@@ -358,7 +358,7 @@
                 <div class="tool-card">
                     <h2>Suggested Corrective Actions</h2>
                     <div id="problemResult" class="result-box">
-                        <div class="result-title">🔎 Results will appear here</div>
+                        <div class="result-title"> Results will appear here</div>
                         Enter problem keywords and search.
                     </div>
                 </div>
@@ -366,7 +366,7 @@
         </section>
     </div>
 
-    <button class="theme-toggle-fixed" onclick="toggleTheme()">🌙 / ☀️ Theme</button>
+    <button class="theme-toggle-fixed" onclick="toggleTheme()"> / ️ Theme</button>
 
     <script>
         function setTheme(theme) {
@@ -478,7 +478,7 @@
 
             document.getElementById("problemResult").innerHTML = `
                 <div class="result-title">Lessons Learned / Corrective Actions</div>
-                ${actions.map(a => `<p>✅ ${a}</p>`).join("")}
+                ${actions.map(a => `<p> ${a}</p>`).join("")}
                 <p><b>Recommended:</b> Attach photos, DPR, inspection checklist, and monitoring data in TunnelKMS Documents.</p>
             `;
         }

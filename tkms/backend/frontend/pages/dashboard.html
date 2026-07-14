@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard â€” TunnelKMS</title>
+  <title>Dashboard — TunnelKMS</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
     .dash-grid {
@@ -227,29 +227,29 @@
 
       <!-- Header -->
       <div class="page-header">
-        <h1 id="welcomeMsg">ðŸ‘‹ Welcome back!</h1>
+        <h1 id="welcomeMsg"> Welcome back!</h1>
         <p>Here's your tunnel project knowledge hub</p>
       </div>
 
       <!-- Stats -->
       <div class="stats-grid" id="statsGrid">
         <div class="stat-card">
-          <div class="stat-icon">ðŸ“</div>
+          <div class="stat-icon"></div>
           <div class="skeleton skel" style="width:60px;height:40px;"></div>
           <div class="stat-label">Total Documents</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">ðŸ‘¥</div>
+          <div class="stat-icon"></div>
           <div class="skeleton skel" style="width:60px;height:40px;"></div>
           <div class="stat-label">Total Users</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">ðŸ“¤</div>
+          <div class="stat-icon"></div>
           <div class="skeleton skel" style="width:60px;height:40px;"></div>
           <div class="stat-label">My Uploads</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">ðŸ‘ï¸</div>
+          <div class="stat-icon">️</div>
           <div class="skeleton skel" style="width:60px;height:40px;"></div>
           <div class="stat-label">Views Today</div>
         </div>
@@ -257,21 +257,21 @@
 
       <!-- Search -->
       <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="ðŸ”  Search documents by name, project, type..."
+        <input type="text" id="searchInput" placeholder="  Search documents by name, project, type..."
           onkeyup="handleSearch(this.value)">
-        <a href="documents.html" class="btn btn-primary">ðŸ“ All Documents</a>
-        <button onclick="openUploadModal()" class="btn btn-secondary">ðŸ“¤ Upload</button>
+        <a href="documents.html" class="btn btn-primary"> All Documents</a>
+        <button onclick="openUploadModal()" class="btn btn-secondary"> Upload</button>
       </div>
 
       <div class="dash-grid">
         <!-- Upload Zone -->
         <div class="upload-card">
-          <h3>ðŸ“¤ Quick Upload</h3>
+          <h3> Quick Upload</h3>
           <div class="upload-zone" id="uploadZone" onclick="document.getElementById('quickFileInput').click()"
             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-            <div class="upload-icon">â˜ï¸</div>
+            <div class="upload-icon">️</div>
             <p><strong>Drop file here</strong> or click to browse</p>
-            <p style="font-size:12px;margin-top:6px;color:var(--text-muted);">PDF, DOC, DOCX, XLS, DWG, Images Â· Max
+            <p style="font-size:12px;margin-top:6px;color:var(--text-muted);">PDF, DOC, DOCX, XLS, DWG, Images · Max
               50MB</p>
           </div>
           <input type="file" id="quickFileInput" style="display:none;" onchange="handleFileSelect(this)">
@@ -280,7 +280,7 @@
 
         <!-- Dept Chart -->
         <div class="upload-card">
-          <h3>ðŸ“Š Documents by Type</h3>
+          <h3> Documents by Type</h3>
           <div class="bar-chart" id="docTypeChart">
             <div style="color:var(--text-muted);font-size:13px;">Loading chart...</div>
           </div>
@@ -289,8 +289,8 @@
         <!-- Recent Docs -->
         <div class="upload-card dash-full">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-            <h3 style="margin:0;">ðŸ• Recent Documents</h3>
-            <a href="documents.html" class="btn btn-ghost btn-sm">View all â†’</a>
+            <h3 style="margin:0;"> Recent Documents</h3>
+            <a href="documents.html" class="btn btn-ghost btn-sm">View all →</a>
           </div>
           <div class="doc-list" id="recentDocs">
             <div style="color:var(--text-muted);font-size:13px;">Loading...</div>
@@ -302,13 +302,13 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-inner">
-        <div class="footer-brand">ðŸš‡ TunnelKMS</div>
+        <div class="footer-brand"> TunnelKMS</div>
         <div class="footer-links">
           <a href="help-center.html">Help</a>
-          <a href="ai-assistant.html">AI Assistant</a><a href="/pages/tunnel-tools.html" class="nav-link">🚇 Tunnel Tools</a>
+          <a href="ai-assistant.html">AI Assistant</a><a href="/pages/tunnel-tools.html" class="nav-link"> Tunnel Tools</a>
           <a href="profile.html">Profile</a>
         </div>
-        <div class="footer-copy">Â© 2025 TunnelKMS Â· Cloud Construction Knowledge Platform</div>
+        <div class="footer-copy">© 2025 TunnelKMS · Cloud Construction Knowledge Platform</div>
       </div>
     </footer>
   </div>
@@ -317,8 +317,8 @@
   <div class="modal-overlay hidden" id="uploadModal">
     <div class="modal" style="max-width:660px;">
       <div class="modal-header">
-        <h2>ðŸ“¤ Upload Document</h2>
-        <button class="modal-close" onclick="closeUploadModal()">Ã—</button>
+        <h2> Upload Document</h2>
+        <button class="modal-close" onclick="closeUploadModal()">×</button>
       </div>
       <div class="modal-body">
         <div id="selectedFileInfo"
@@ -394,7 +394,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
-          <button class="btn btn-primary" id="confirmUploadBtn" onclick="confirmUpload()">ðŸ“¤ Upload Document</button>
+          <button class="btn btn-primary" id="confirmUploadBtn" onclick="confirmUpload()"> Upload Document</button>
         </div>
       </div>
     </div>
@@ -407,7 +407,7 @@
       async function initDashboard() {
         await Nav.build('dashboard');
         const user = Auth.getUser();
-        document.getElementById('welcomeMsg').textContent = `ðŸ‘‹ Welcome back, ${user?.profile?.fullName?.split(' ')[0] || 'Engineer'}!`;
+        document.getElementById('welcomeMsg').textContent = ` Welcome back, ${user?.profile?.fullName?.split(' ')[0] || 'Engineer'}!`;
         document.getElementById('docDate').value = new Date().toISOString().split('T')[0];
         await Promise.all([loadStats(), loadRecentDocs()]);
       }
@@ -424,22 +424,22 @@
 
           document.getElementById('statsGrid').innerHTML = `
         <div class="stat-card">
-          <div class="stat-icon">ðŸ“</div>
+          <div class="stat-icon"></div>
           <div class="stat-value">${s.total}</div>
           <div class="stat-label">Total Documents</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">ðŸ‘¥</div>
-          <div class="stat-value">${usersData?.stats?.totalUsers || 'â€”'}</div>
+          <div class="stat-icon"></div>
+          <div class="stat-value">${usersData?.stats?.totalUsers || '—'}</div>
           <div class="stat-label">Team Members</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">ðŸ“¤</div>
+          <div class="stat-icon"></div>
           <div class="stat-value">${myDocs.documents?.length || 0}</div>
           <div class="stat-label">My Uploads</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">ðŸ†</div>
+          <div class="stat-icon"></div>
           <div class="stat-value">${s.mostViewed?.[0]?.viewCount || 0}</div>
           <div class="stat-label">Top Doc Views</div>
         </div>
@@ -467,10 +467,10 @@
           if (!docs?.length) {
             document.getElementById('recentDocs').innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">ðŸ“­</div>
+            <div class="empty-icon"></div>
             <h3>No documents yet</h3>
             <p>Upload your first tunnel construction document to get started</p>
-            <button onclick="openUploadModal()" class="btn btn-primary" style="margin-top:16px;">ðŸ“¤ Upload First Document</button>
+            <button onclick="openUploadModal()" class="btn btn-primary" style="margin-top:16px;"> Upload First Document</button>
           </div>`;
             return;
           }
@@ -479,7 +479,7 @@
           <span class="doc-icon-sm">${Format.fileIcon(doc.originalName)}</span>
           <div class="doc-row-info">
             <h4>${doc.originalName}</h4>
-            <p>${doc.projectName} Â· ${doc.documentType} Â· ${doc.departmentName}</p>
+            <p>${doc.projectName} · ${doc.documentType} · ${doc.departmentName}</p>
           </div>
           <div class="doc-row-meta">
             <div style="margin-bottom:4px;">${Format.fileSize(doc.fileSize)}</div>
@@ -499,7 +499,7 @@
           const data = await API.get(`/documents?search=${encodeURIComponent(query)}&limit=8`);
           const docs = data.documents;
           if (!docs?.length) {
-            document.getElementById('recentDocs').innerHTML = `<div class="empty-state"><div class="empty-icon">ðŸ”</div><h3>No results</h3><p>No documents match "${query}"</p></div>`;
+            document.getElementById('recentDocs').innerHTML = `<div class="empty-state"><div class="empty-icon"></div><h3>No results</h3><p>No documents match "${query}"</p></div>`;
             return;
           }
           document.getElementById('recentDocs').innerHTML = docs.map(doc => `
@@ -507,7 +507,7 @@
           <span class="doc-icon-sm">${Format.fileIcon(doc.originalName)}</span>
           <div class="doc-row-info">
             <h4>${doc.originalName}</h4>
-            <p>${doc.projectName} Â· ${doc.documentType}</p>
+            <p>${doc.projectName} · ${doc.documentType}</p>
           </div>
           <div class="doc-row-meta">${Format.fileSize(doc.fileSize)}</div>
         </div>
@@ -543,7 +543,7 @@
         document.getElementById('uploadProgressBox').style.display = 'none';
         document.getElementById('uploadProgressBar').style.width = '0%';
         document.getElementById('confirmUploadBtn').disabled = false;
-        document.getElementById('confirmUploadBtn').innerHTML = 'ðŸ“¤ Upload Document';
+        document.getElementById('confirmUploadBtn').innerHTML = ' Upload Document';
         selectedFile = null;
         document.getElementById('quickFileInput').value = '';
       }
@@ -586,17 +586,17 @@
           clearInterval(progressInterval);
           document.getElementById('uploadProgressBar').style.width = '100%';
           document.getElementById('uploadPct').textContent = '100%';
-          document.getElementById('uploadStatusText').textContent = 'âœ… Uploaded Successfully!';
+          document.getElementById('uploadStatusText').textContent = ' Uploaded Successfully!';
           document.getElementById('uploadStatusText').style.color = 'var(--success)';
-          Toast.success(`âœ… "${file.name}" uploaded! Document ID: ${data.document.documentId}`);
+          Toast.success(` "${file.name}" uploaded! Document ID: ${data.document.documentId}`);
           setTimeout(() => { closeUploadModal(); loadRecentDocs(); loadStats(); }, 1500);
         } catch (err) {
           clearInterval(progressInterval);
-          document.getElementById('uploadStatusText').textContent = 'âŒ ' + err.message;
+          document.getElementById('uploadStatusText').textContent = ' ' + err.message;
           document.getElementById('uploadStatusText').style.color = 'var(--danger)';
           Toast.error(err.message);
           btn.disabled = false;
-          btn.innerHTML = 'ðŸ“¤ Upload Document';
+          btn.innerHTML = ' Upload Document';
         }
       }
 
