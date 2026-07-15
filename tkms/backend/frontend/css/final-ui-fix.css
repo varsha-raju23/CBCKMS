@@ -1,8 +1,4 @@
-﻿/* Final TunnelKMS professional UI cleanup */
-
-* {
-  box-sizing: border-box;
-}
+﻿/* Final professional UI polish */
 
 body {
   font-family: Inter, "Segoe UI", Arial, sans-serif !important;
@@ -13,68 +9,26 @@ a:empty {
   display: none !important;
 }
 
-button:empty::before {
-  content: "" !important;
-}
-
-.nav-link {
-  text-decoration: none !important;
-  font-weight: 700 !important;
-}
-
-.tkms-theme-btn,
-.tkms-menu-btn {
+.tkms-profile-btn,
+.tkms-theme-btn {
   height: 40px !important;
   padding: 0 16px !important;
   border-radius: 10px !important;
   border: 1px solid rgba(148,163,184,0.35) !important;
   background: transparent !important;
   color: #38bdf8 !important;
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   cursor: pointer !important;
   margin-left: 10px !important;
-}
-
-.tkms-menu-wrap {
-  position: relative !important;
-  display: inline-block !important;
-}
-
-.tkms-menu-panel {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 46px;
-  min-width: 170px;
-  background: #0f1e33;
-  border: 1px solid rgba(148,163,184,0.35);
-  border-radius: 12px;
-  padding: 8px;
-  z-index: 999999;
-  box-shadow: 0 18px 45px rgba(0,0,0,0.35);
-}
-
-.tkms-menu-wrap.open .tkms-menu-panel {
-  display: block;
-}
-
-.tkms-menu-panel a,
-.tkms-menu-panel button {
-  display: block !important;
-  width: 100% !important;
-  text-align: left !important;
-  padding: 10px 12px !important;
-  border: 0 !important;
-  background: transparent !important;
-  color: #eaf4ff !important;
   text-decoration: none !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.tkms-menu-panel a:hover,
-.tkms-menu-panel button:hover {
-  background: rgba(59,130,246,0.22) !important;
+.tkms-profile-btn:hover,
+.tkms-theme-btn:hover {
+  background: rgba(56,189,248,0.12) !important;
 }
 
 .tkms-native-select-hidden {
@@ -152,6 +106,22 @@ button:empty::before {
   color: #ffffff !important;
 }
 
+.tkms-ai-scroll-box {
+  max-height: 62vh !important;
+  overflow-y: auto !important;
+  padding-right: 8px !important;
+  scroll-behavior: smooth !important;
+}
+
+.tkms-ai-scroll-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tkms-ai-scroll-box::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,0.45);
+  border-radius: 10px;
+}
+
 .modal,
 .upload-modal,
 .modal-content {
@@ -194,4 +164,218 @@ html[data-theme="light"] .tkms-custom-select-menu {
 
 html[data-theme="light"] .tkms-custom-select-item {
   color: #0f172a !important;
+}
+/* Dashboard final overview */
+
+.tkms-dashboard-overview {
+  margin: 24px 0 !important;
+}
+
+.tkms-overview-header {
+  background: linear-gradient(135deg, #0f3b82, #2563eb);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 18px;
+  color: white;
+}
+
+.tkms-overview-header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.tkms-overview-header p {
+  margin: 8px 0 0;
+  color: #dbeafe;
+}
+
+.tkms-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.tkms-stat-card {
+  background: #0f1e33;
+  border: 1px solid rgba(148,163,184,0.28);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+.tkms-stat-card span {
+  display: block;
+  color: #9fb7d4;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.tkms-stat-card strong {
+  font-size: 42px;
+  color: white;
+}
+
+.tkms-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.tkms-panel {
+  background: #0f1e33;
+  border: 1px solid rgba(148,163,184,0.28);
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.tkms-panel h3 {
+  margin-top: 0;
+}
+
+.tkms-type-row,
+.tkms-recent-row {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(148,163,184,0.18);
+}
+
+.tkms-type-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tkms-recent-row b,
+.tkms-recent-row span {
+  display: block;
+}
+
+.tkms-recent-row span {
+  color: #9fb7d4;
+  margin-top: 4px;
+}
+
+html[data-theme="light"] .tkms-stat-card,
+html[data-theme="light"] .tkms-panel {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #d6dee9;
+}
+
+html[data-theme="light"] .tkms-stat-card strong {
+  color: #0f172a;
+}
+
+@media (max-width: 900px) {
+  .tkms-stat-grid,
+  .tkms-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Dashboard final overview */
+
+.tkms-dashboard-overview {
+  margin: 24px 0 !important;
+}
+
+.tkms-overview-header {
+  background: linear-gradient(135deg, #0f3b82, #2563eb);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 18px;
+  color: white;
+}
+
+.tkms-overview-header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.tkms-overview-header p {
+  margin: 8px 0 0;
+  color: #dbeafe;
+}
+
+.tkms-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.tkms-stat-card {
+  background: #0f1e33;
+  border: 1px solid rgba(148,163,184,0.28);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+.tkms-stat-card span {
+  display: block;
+  color: #9fb7d4;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.tkms-stat-card strong {
+  font-size: 42px;
+  color: white;
+}
+
+.tkms-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.tkms-panel {
+  background: #0f1e33;
+  border: 1px solid rgba(148,163,184,0.28);
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.tkms-panel h3 {
+  margin-top: 0;
+}
+
+.tkms-type-row,
+.tkms-recent-row {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(148,163,184,0.18);
+}
+
+.tkms-type-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tkms-recent-row b,
+.tkms-recent-row span {
+  display: block;
+}
+
+.tkms-recent-row span {
+  color: #9fb7d4;
+  margin-top: 4px;
+}
+
+html[data-theme="light"] .tkms-stat-card,
+html[data-theme="light"] .tkms-panel {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #d6dee9;
+}
+
+html[data-theme="light"] .tkms-stat-card strong {
+  color: #0f172a;
+}
+
+@media (max-width: 900px) {
+  .tkms-stat-grid,
+  .tkms-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }
