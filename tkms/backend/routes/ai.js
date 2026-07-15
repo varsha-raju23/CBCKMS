@@ -3,166 +3,130 @@ const fs = require("fs");
 const path = require("path");
 const router = express.Router();
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const pdfParse = require("pdf-parse");
-const mammoth = require("mammoth");
+let GoogleGenerativeAI = null;
+let pdfParse = null;
+let mammoth = null;
 
-const { connectAzureSQL, sql } = require("../config/azureSql");
+try { GoogleGenerativeAI = require("@google/generative-ai").GoogleGenerativeAI; } catch {}
+try { pdfParse = require("pdf-parse"); } catch {}
+try { mammoth = require("mammoth"); } catch {}
+
+const { connectAzureSQL } = require("../config/azureSql");
 const { protectAzure } = require("../middleware/azureAuth.middleware");
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
+const genAI = GEMINI_API_KEY && GoogleGenerativeAI ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
 
-async function ensureDocumentContentTable() {
-    const pool = await connectAzureSQL();
-
-    await pool.request().query(`
-        IF OBJECT_ID('DocumentContent', 'U') IS NULL
-        BEGIN
-            CREATE TABLE DocumentContent (
-                documentId INT PRIMARY KEY,
-                extractedText NVARCHAR(MAX) NULL,
-                extractedAt DATETIME2 DEFAULT SYSUTCDATETIME()
-            )
-        END
-    `);
+function cleanText(value) {
+    return String(value || "")
+        .replace(/\s+/g, " ")
+        .replace(/[^\x09\x0A\x0D\x20-\x7E\u00A0-\uFFFF]/g, "")
+        .trim();
 }
 
-function findLocalFile(fileName, fileUrl) {
-    const candidates = [
-        path.join(__dirname, "..", "uploads", "documents", fileName || ""),
-        path.join(__dirname, "..", "frontend", "uploads", "documents", fileName || ""),
-        path.join(process.cwd(), "uploads", "documents", fileName || ""),
-        path.join(process.cwd(), "frontend", "uploads", "documents", fileName || "")
-    ];
+function docName(doc) {
+    return cleanText(doc.title || doc.originalName || doc.fileName || ("Document " + doc.id));
+}
+
+function docType(doc) {
+    return cleanText(doc.documentType || doc.category || doc.type || "General Document");
+}
+
+function projectName(doc) {
+    return cleanText(doc.projectName || doc.project || "Tunnel Project");
+}
+
+async function getDocuments() {
+    const pool = await connectAzureSQL();
+
+    try {
+        const result = await pool.request().query(`
+            SELECT TOP 100 *
+            FROM Documents
+            WHERE ISNULL(isActive, 1) = 1
+            ORDER BY id DESC
+        `);
+        return result.recordset || [];
+    } catch {
+        const result = await pool.request().query(`
+            SELECT TOP 100 *
+            FROM Documents
+            ORDER BY id DESC
+        `);
+        return result.recordset || [];
+    }
+}
+
+function findLocalFile(doc) {
+    const fileName = doc.fileName || "";
+    const fileUrl = doc.fileUrl || doc.blobUrl || "";
+
+    const candidates = [];
+
+    if (fileName) {
+        candidates.push(path.join(__dirname, "..", "uploads", "documents", fileName));
+        candidates.push(path.join(process.cwd(), "uploads", "documents", fileName));
+        candidates.push(path.join(__dirname, "..", "frontend", "uploads", "documents", fileName));
+    }
 
     if (fileUrl) {
-        const clean = fileUrl.replace(/^\/+/, "");
-        candidates.push(path.join(__dirname, "..", clean));
-        candidates.push(path.join(__dirname, "..", "frontend", clean));
-        candidates.push(path.join(process.cwd(), clean));
+        const cleanUrl = String(fileUrl).replace(/^\/+/, "");
+        candidates.push(path.join(__dirname, "..", cleanUrl));
+        candidates.push(path.join(process.cwd(), cleanUrl));
+        candidates.push(path.join(__dirname, "..", "frontend", cleanUrl));
     }
 
     return candidates.find(p => p && fs.existsSync(p));
 }
 
-async function extractTextFromFile(filePath) {
+async function extractText(filePath) {
     if (!filePath || !fs.existsSync(filePath)) return "";
 
     const ext = path.extname(filePath).toLowerCase();
 
     try {
-        if (ext === ".pdf") {
+        if (ext === ".pdf" && pdfParse) {
             const data = await pdfParse(fs.readFileSync(filePath));
-            return data.text || "";
+            return cleanText(data.text || "");
         }
 
-        if (ext === ".docx") {
-            const result = await mammoth.extractRawText({ path: filePath });
-            return result.value || "";
+        if (ext === ".docx" && mammoth) {
+            const data = await mammoth.extractRawText({ path: filePath });
+            return cleanText(data.value || "");
         }
 
-        if ([".txt", ".csv", ".md", ".json", ".html"].includes(ext)) {
-            return fs.readFileSync(filePath, "utf8");
+        if ([".txt", ".md", ".csv", ".json"].includes(ext)) {
+            return cleanText(fs.readFileSync(filePath, "utf8"));
         }
 
         return "";
     } catch (error) {
-        console.error("Text extraction failed:", filePath, error.message);
+        console.error("Document extraction failed:", error.message);
         return "";
     }
 }
 
-async function getCachedText(documentId) {
-    await ensureDocumentContentTable();
-    const pool = await connectAzureSQL();
+async function loadDocumentText(doc) {
+    const directText = cleanText(doc.extractedText || doc.content || doc.description || "");
+    if (directText.length > 30) return directText;
 
-    const result = await pool.request()
-        .input("documentId", sql.Int, documentId)
-        .query(`
-            SELECT extractedText
-            FROM DocumentContent
-            WHERE documentId = @documentId
-        `);
-
-    return result.recordset[0]?.extractedText || "";
-}
-
-async function saveCachedText(documentId, text) {
-    await ensureDocumentContentTable();
-    const pool = await connectAzureSQL();
-
-    await pool.request()
-        .input("documentId", sql.Int, documentId)
-        .input("extractedText", sql.NVarChar(sql.MAX), text || "")
-        .query(`
-            MERGE DocumentContent AS target
-            USING (SELECT @documentId AS documentId, @extractedText AS extractedText) AS source
-            ON target.documentId = source.documentId
-            WHEN MATCHED THEN
-                UPDATE SET extractedText = source.extractedText, extractedAt = SYSUTCDATETIME()
-            WHEN NOT MATCHED THEN
-                INSERT (documentId, extractedText, extractedAt)
-                VALUES (source.documentId, source.extractedText, SYSUTCDATETIME());
-        `);
-}
-
-async function loadDocumentsWithText() {
-    const pool = await connectAzureSQL();
-
-    const result = await pool.request().query(`
-        SELECT TOP 50
-            id,
-            title,
-            originalName,
-            fileName,
-            documentType,
-            category,
-            departmentName,
-            projectName,
-            fileUrl,
-            blobUrl,
-            uploadedAt,
-            isActive
-        FROM Documents
-        WHERE isActive = 1
-        ORDER BY uploadedAt DESC
-    `);
-
-    const docs = [];
-
-    for (const doc of result.recordset) {
-        let text = await getCachedText(doc.id);
-
-        if (!text || text.trim().length < 20) {
-            const filePath = findLocalFile(doc.fileName, doc.fileUrl || doc.blobUrl);
-            text = await extractTextFromFile(filePath);
-
-            if (text && text.trim()) {
-                await saveCachedText(doc.id, text);
-            }
-        }
-
-        docs.push({
-            ...doc,
-            text: (text || "").replace(/\s+/g, " ").trim()
-        });
-    }
-
-    return docs;
+    const filePath = findLocalFile(doc);
+    const extracted = await extractText(filePath);
+    return extracted;
 }
 
 function tokenize(question) {
-    return String(question || "")
+    const stop = new Set(["what", "when", "where", "which", "with", "from", "that", "this", "have", "been", "will", "shall", "your", "about", "documents", "document", "uploaded", "project"]);
+    return cleanText(question)
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, " ")
         .split(/\s+/)
-        .filter(w => w.length > 2);
+        .filter(w => w.length > 2 && !stop.has(w));
 }
 
-function makeChunks(text, size = 1200) {
+function splitChunks(text, size = 1000) {
     const chunks = [];
-    const clean = String(text || "").replace(/\s+/g, " ").trim();
+    const clean = cleanText(text);
 
     for (let i = 0; i < clean.length; i += size) {
         chunks.push(clean.slice(i, i + size));
@@ -171,177 +135,253 @@ function makeChunks(text, size = 1200) {
     return chunks;
 }
 
-function searchRelevantChunks(question, documents) {
+function isDocumentListQuestion(question) {
+    const q = question.toLowerCase();
+    return q.includes("what documents") ||
+        q.includes("which documents") ||
+        q.includes("list documents") ||
+        q.includes("available documents") ||
+        q.includes("what files") ||
+        q.includes("available files");
+}
+
+function searchRelevantChunks(question, docs) {
     const words = tokenize(question);
     const results = [];
 
-    for (const doc of documents) {
-        const chunks = makeChunks(doc.text || "");
+    for (const doc of docs) {
+        const metadata = [
+            docName(doc),
+            docType(doc),
+            projectName(doc),
+            doc.departmentName || "",
+            doc.tags || ""
+        ].join(" ").toLowerCase();
+
+        const chunks = splitChunks(doc.__text || "");
 
         chunks.forEach((chunk, index) => {
             const lower = chunk.toLowerCase();
             let score = 0;
 
-            words.forEach(word => {
-                if (lower.includes(word)) score += 3;
-            });
-
-            const titleText = `${doc.title || ""} ${doc.originalName || ""} ${doc.documentType || ""} ${doc.projectName || ""}`.toLowerCase();
-            words.forEach(word => {
-                if (titleText.includes(word)) score += 2;
-            });
+            for (const word of words) {
+                if (lower.includes(word)) score += 5;
+                if (metadata.includes(word)) score += 2;
+            }
 
             if (score > 0) {
                 results.push({
                     score,
                     documentId: doc.id,
-                    documentName: doc.title || doc.originalName || doc.fileName,
-                    projectName: doc.projectName || "Tunnel Project",
-                    documentType: doc.documentType || doc.category || "Document",
+                    documentName: docName(doc),
+                    projectName: projectName(doc),
+                    documentType: docType(doc),
                     chunkIndex: index + 1,
                     text: chunk
                 });
             }
         });
+
+        if (!chunks.length) {
+            let score = 0;
+            for (const word of words) {
+                if (metadata.includes(word)) score += 2;
+            }
+
+            if (score > 0) {
+                results.push({
+                    score,
+                    documentId: doc.id,
+                    documentName: docName(doc),
+                    projectName: projectName(doc),
+                    documentType: docType(doc),
+                    chunkIndex: 0,
+                    text: "Document metadata: " + metadata
+                });
+            }
+        }
     }
 
     return results.sort((a, b) => b.score - a.score).slice(0, 8);
 }
 
-async function answerWithGemini(question, contextChunks) {
-    if (!genAI) return null;
+async function geminiAnswer(question, chunks) {
+    if (!genAI || !chunks.length) return null;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const context = contextChunks.map((c, i) => {
-        return `
-SOURCE ${i + 1}
-Document: ${c.documentName}
-Project: ${c.projectName}
-Type: ${c.documentType}
-Content: ${c.text}
-`;
-    }).join("\n\n");
+        const context = chunks.map((c, i) => {
+            return [
+                "SOURCE " + (i + 1),
+                "Document: " + c.documentName,
+                "Project: " + c.projectName,
+                "Type: " + c.documentType,
+                "Content: " + c.text
+            ].join("\n");
+        }).join("\n\n");
 
-    const prompt = `
-You are TunnelKMS AI Assistant for tunnel construction knowledge management.
+        const prompt = [
+            "You are TunnelKMS AI Assistant for tunnel construction knowledge management.",
+            "Answer using ONLY the uploaded document context.",
+            "Do not say refer yourself.",
+            "Give a direct professional answer for tunnel engineers.",
+            "If exact information is missing, say exact information is not available and mention related information found.",
+            "Mention document names used.",
+            "",
+            "Uploaded document context:",
+            context,
+            "",
+            "User question:",
+            question,
+            "",
+            "Answer:"
+        ].join("\n");
 
-Answer the user's question using ONLY the uploaded document content below.
-
-Rules:
-1. Give a direct answer.
-2. Do not say "refer yourself".
-3. If exact answer is not available, say what is available and what is missing.
-4. Mention document names used.
-5. Keep answer professional and useful for tunnel project engineers.
-
-Uploaded document context:
-${context}
-
-User question:
-${question}
-
-Final answer:
-`;
-
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+        const result = await model.generateContent(prompt);
+        return cleanText(result.response.text());
+    } catch (error) {
+        console.error("Gemini failed:", error.message);
+        return null;
+    }
 }
 
-function fallbackAnswer(question, chunks, docs) {
+function listDocumentsAnswer(docs) {
     if (!docs.length) {
-        return "No uploaded documents are available. Please upload tunnel project documents first.";
+        return "No uploaded documents are available. Please upload readable PDF, DOCX, or TXT tunnel documents first.";
+    }
+
+    const lines = docs.map((d, i) => {
+        return (i + 1) + ". " + docName(d) + " | Project: " + projectName(d) + " | Type: " + docType(d);
+    });
+
+    return "The following uploaded tunnel documents are available:\n\n" + lines.join("\n");
+}
+
+function fallbackAnswer(question, docs, chunks) {
+    if (!docs.length) {
+        return "No uploaded documents are available. Please upload readable PDF, DOCX, or TXT tunnel documents first.";
+    }
+
+    if (isDocumentListQuestion(question)) {
+        return listDocumentsAnswer(docs);
     }
 
     if (!chunks.length) {
-        const names = docs.map(d => d.title || d.originalName || d.fileName).join(", ");
-
-        return `I found ${docs.length} uploaded document(s): ${names}. However, I could not find exact content related to your question: "${question}". Please upload a readable PDF, DOCX, or TXT file with project details for accurate analysis.`;
+        const related = docs.slice(0, 5).map(d => docName(d)).join(", ");
+        return "This exact information is not available in uploaded documents. Related uploaded documents found: " + related + ". Please upload a readable document containing this detail for a more accurate answer.";
     }
 
-    const usedDocs = [...new Set(chunks.map(c => c.documentName))].join(", ");
+    const used = [...new Set(chunks.map(c => c.documentName))].join(", ");
 
-    const points = chunks.slice(0, 4).map((c, i) => {
-        const shortText = c.text.length > 450 ? c.text.slice(0, 450) + "..." : c.text;
-        return `${i + 1}. From ${c.documentName}: ${shortText}`;
+    const points = chunks.slice(0, 5).map((c, i) => {
+        const shortText = c.text.length > 500 ? c.text.slice(0, 500) + "..." : c.text;
+        return (i + 1) + ". From " + c.documentName + ": " + shortText;
     }).join("\n\n");
 
-    return `Based on the uploaded tunnel documents, I found relevant information for your question.
-
-${points}
-
-Documents used: ${usedDocs}`;
+    return [
+        "Based on the uploaded tunnel documents, I found the following relevant information:",
+        "",
+        points,
+        "",
+        "Documents used: " + used
+    ].join("\n");
 }
 
-async function handleAIQuestion(req, res) {
-    try {
-        const question = req.body.message || req.body.question || req.body.query || "";
+function uniqueSources(chunks) {
+    const map = new Map();
 
-        if (!question.trim()) {
+    for (const c of chunks) {
+        if (!map.has(c.documentId)) {
+            map.set(c.documentId, {
+                documentId: c.documentId,
+                documentName: c.documentName,
+                projectName: c.projectName,
+                documentType: c.documentType
+            });
+        }
+    }
+
+    return Array.from(map.values());
+}
+
+async function handleQuestion(req, res) {
+    try {
+        const question = cleanText(req.body.message || req.body.question || req.body.query || "");
+
+        if (!question) {
             return res.status(400).json({
                 success: false,
                 message: "Question is required"
             });
         }
 
-        const documents = await loadDocumentsWithText();
+        const docs = await getDocuments();
 
-        if (!documents.length) {
+        for (const doc of docs) {
+            doc.__text = await loadDocumentText(doc);
+        }
+
+        if (isDocumentListQuestion(question)) {
+            const answer = listDocumentsAnswer(docs);
             return res.json({
                 success: true,
-                answer: "No uploaded documents are available. Please upload tunnel project documents first.",
-                response: "No uploaded documents are available. Please upload tunnel project documents first.",
-                message: "No uploaded documents are available. Please upload tunnel project documents first.",
-                references: [],
-                sources: []
+                answer,
+                response: answer,
+                message: answer,
+                sources: docs.map(d => ({
+                    documentId: d.id,
+                    documentName: docName(d),
+                    projectName: projectName(d),
+                    documentType: docType(d)
+                })),
+                references: docs.map(d => ({
+                    documentId: d.id,
+                    documentName: docName(d),
+                    projectName: projectName(d),
+                    documentType: docType(d)
+                })),
+                sessionId: req.body.sessionId || "default"
             });
         }
 
-        const readableDocs = documents.filter(d => d.text && d.text.length > 20);
-        const chunks = searchRelevantChunks(question, readableDocs);
+        const readableDocs = docs.filter(d => d.__text && d.__text.length > 20);
+        const chunks = searchRelevantChunks(question, readableDocs.length ? readableDocs : docs);
 
-        let answer = null;
-
-        if (chunks.length) {
-            answer = await answerWithGemini(question, chunks);
-        }
+        let answer = await geminiAnswer(question, chunks);
 
         if (!answer) {
-            answer = fallbackAnswer(question, chunks, documents);
+            answer = fallbackAnswer(question, docs, chunks);
         }
 
-        const sources = chunks.map(c => ({
-            documentId: c.documentId,
-            documentName: c.documentName,
-            projectName: c.projectName,
-            documentType: c.documentType,
-            chunk: c.chunkIndex
-        }));
+        const sources = uniqueSources(chunks);
 
         return res.json({
             success: true,
             answer,
             response: answer,
             message: answer,
-            references: sources,
             sources,
+            references: sources,
             sessionId: req.body.sessionId || "default"
         });
-
     } catch (error) {
-        console.error("AI assistant error:", error);
-        return res.status(500).json({
-            success: false,
-            message: "AI Assistant failed",
+        console.error("AI Assistant error:", error);
+        return res.status(200).json({
+            success: true,
+            answer: "AI could not answer right now. Please upload readable PDF, DOCX, or TXT documents and try again.",
+            response: "AI could not answer right now. Please upload readable PDF, DOCX, or TXT documents and try again.",
+            message: "AI could not answer right now. Please upload readable PDF, DOCX, or TXT documents and try again.",
+            sources: [],
+            references: [],
             error: error.message
         });
     }
 }
 
-router.post("/chat", protectAzure, handleAIQuestion);
-router.post("/ask", protectAzure, handleAIQuestion);
-router.post("/query", protectAzure, handleAIQuestion);
-router.post("/", protectAzure, handleAIQuestion);
+router.post("/chat", protectAzure, handleQuestion);
+router.post("/ask", protectAzure, handleQuestion);
+router.post("/query", protectAzure, handleQuestion);
+router.post("/", protectAzure, handleQuestion);
 
 module.exports = router;
-

@@ -1,0 +1,197 @@
+﻿/* Final TunnelKMS professional UI cleanup */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, "Segoe UI", Arial, sans-serif !important;
+}
+
+button:empty,
+a:empty {
+  display: none !important;
+}
+
+button:empty::before {
+  content: "" !important;
+}
+
+.nav-link {
+  text-decoration: none !important;
+  font-weight: 700 !important;
+}
+
+.tkms-theme-btn,
+.tkms-menu-btn {
+  height: 40px !important;
+  padding: 0 16px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(148,163,184,0.35) !important;
+  background: transparent !important;
+  color: #38bdf8 !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  margin-left: 10px !important;
+}
+
+.tkms-menu-wrap {
+  position: relative !important;
+  display: inline-block !important;
+}
+
+.tkms-menu-panel {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 46px;
+  min-width: 170px;
+  background: #0f1e33;
+  border: 1px solid rgba(148,163,184,0.35);
+  border-radius: 12px;
+  padding: 8px;
+  z-index: 999999;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+}
+
+.tkms-menu-wrap.open .tkms-menu-panel {
+  display: block;
+}
+
+.tkms-menu-panel a,
+.tkms-menu-panel button {
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
+  padding: 10px 12px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #eaf4ff !important;
+  text-decoration: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
+
+.tkms-menu-panel a:hover,
+.tkms-menu-panel button:hover {
+  background: rgba(59,130,246,0.22) !important;
+}
+
+.tkms-native-select-hidden {
+  position: absolute !important;
+  left: -99999px !important;
+  opacity: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  pointer-events: none !important;
+}
+
+.tkms-custom-select {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.tkms-custom-select-button {
+  width: 100% !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(148,163,184,0.45) !important;
+  background: #071a2f !important;
+  color: #eaf4ff !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+  padding: 0 44px 0 16px !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+.tkms-custom-select-button::after {
+  content: "v";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9fb7d4;
+}
+
+.tkms-custom-select-menu {
+  display: none !important;
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-height: 260px !important;
+  overflow-y: auto !important;
+  background: #122238 !important;
+  border: 1px solid rgba(148,163,184,0.4) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.35) !important;
+  padding: 6px !important;
+  z-index: 999999 !important;
+}
+
+.tkms-custom-select.open .tkms-custom-select-menu {
+  display: block !important;
+}
+
+.tkms-custom-select-item {
+  width: 100% !important;
+  border: none !important;
+  background: transparent !important;
+  color: #f8fbff !important;
+  padding: 12px 14px !important;
+  border-radius: 8px !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+}
+
+.tkms-custom-select-item:hover,
+.tkms-custom-select-item.selected {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb) !important;
+  color: #ffffff !important;
+}
+
+.modal,
+.upload-modal,
+.modal-content {
+  overflow: visible !important;
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] .main-content,
+html[data-theme="light"] .dashboard,
+html[data-theme="light"] .documents-page {
+  background: #f4f7fb !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .doc-card,
+html[data-theme="light"] .upload-card,
+html[data-theme="light"] .profile-card,
+html[data-theme="light"] .navbar,
+html[data-theme="light"] footer {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #d6dee9 !important;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] textarea {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .tkms-custom-select-button,
+html[data-theme="light"] .tkms-custom-select-menu {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="light"] .tkms-custom-select-item {
+  color: #0f172a !important;
+}
